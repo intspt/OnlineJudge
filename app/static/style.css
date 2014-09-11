@@ -1,0 +1,58 @@
+#wrapper {
+    position: absolute;
+    width: 95%;
+    left: 2.5%;
+}
+#profile {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: bold;
+}
+#navBar {
+    width: 1000px;
+    background-color: #AFEEEE;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+#navBar td {
+    text-align: center;
+    font-size: 17px;
+    color: black;
+    width: 133px;
+    overflow: scroll;
+    border: 1px solid white;
+    padding: 4px 7px 4px 7px;
+}
+#navBar td {
+    text-align: center;
+    font-size: 17px;
+    color: black;
+    width: 133px;
+    overflow: scroll;
+    padding: 4px 7px 4px 7px;
+}
+#hello {
+    position: relative;
+    top: 444px;
+    text-align: center;
+    font-size: 19px;
+}
+.title {
+    text-align: center;
+    color: blue;
+    font-size: 29px;
+}
+a:link {
+    text-decoration: none;
+    color: blue;
+}
+a:active { 
+    text-decoration:blink;
+}
+a:hover { 
+    color: orange;
+}
+a:visited {
+    color: green;
+}
