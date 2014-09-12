@@ -2,6 +2,7 @@
     position: absolute;
     width: 95%;
     left: 2.5%;
+    min-height: 100%;
 }
 #profile {
     position: absolute;
@@ -11,51 +12,48 @@
 }
 #navBar {
     width: 1000px;
-    background-color: #AFEEEE;
+    background-color: #6589d1;
     margin: 0 auto;
     border-collapse: collapse;
 }
 #navBar td {
     text-align: center;
     font-size: 17px;
-    color: black;
     width: 133px;
     overflow: scroll;
     border: 1px solid white;
     padding: 4px 7px 4px 7px;
 }
-#navBar td {
-    text-align: center;
-    font-size: 17px;
-    color: black;
-    width: 133px;
-    overflow: scroll;
-    padding: 4px 7px 4px 7px;
-}
 #hello {
     position: relative;
-    top: 444px;
+    top: 33px;
     text-align: center;
     font-size: 19px;
 }
 #register {
-    
+    width: 333px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #F0FFFF;
 }
 .title {
     text-align: center;
     color: blue;
     font-size: 29px;
 }
+.red {
+    color: red;
+}
 a:link {
     text-decoration: none;
-    color: blue;
+    color: black;
 }
-a:active { 
-    text-decoration:blink;
+a:visited {
+    color: black;
 }
 a:hover { 
     color: orange;
 }
-a:visited {
-    color: green;
+a:active { 
+    text-decoration:blink;
 }
