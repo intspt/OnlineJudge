@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 
-from flask import render_template, request, flash, redirect
-from app import app
+from flask import render_template, request, g
+from app import app, db
 from models import User
 from forms import RegisterForm
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR
@@ -18,7 +18,6 @@ def register():
         return render_template('register.html', form = form)
     else:
         if not form.validate_userID():
-            print 'id error'
             error = USERID_ERROR
         elif not form.validate_nickName():
             error = NICKNAME_ERROR
@@ -33,7 +32,9 @@ def register():
             return render_template('register.html', form = form, error = error)
         else:
             user = User(form.userID.data, form.nickName.data, form.password.data)
-            print user
+            db.session.add(user)
+            db.session.commit()
+            return 'yes'
 
 @app.route('/login/')
 def login():
