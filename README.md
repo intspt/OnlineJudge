@@ -1,1 +1,1 @@
-online judge from spt
+online judge by spt
