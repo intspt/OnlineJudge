@@ -7,9 +7,10 @@ ROLE_USER = 0
 ROLE_ADMIN = 1
 
 class User(db.Model):
-    userID = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(22), index = True, unique = True)
-    password = db.Column(db.String(120), index = True, unique = True)
+    __tablename__ = 'user'
+    userID = db.Column(db.String(22), primary_key = True)
+    nickname = db.Column(db.String(22))
+    password = db.Column(db.String(120))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
 
     def __init__(self, userID, nickname, password):
@@ -17,8 +18,17 @@ class User(db.Model):
         self.nickname = nickname
         self.password = password
 
-    def __repr__(self):
-        return '<User %r>' % self.nickname
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.userID
 
 
 

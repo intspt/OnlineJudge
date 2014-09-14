@@ -4,16 +4,16 @@
     <form action="/register/" method="POST">
         {{ form.csrf_token }}
         <center><h2> Register Information </h2></center>
-        {% if error %}
-            <center><h3 class="red">
+        <center><h3 class="red">
+            {% if error %}
                 {{ error }}
-            </h3></center>
-        {% endif %}
+            {% endif %}
+        </h3></center>
         <table id="register">
-            <tr><td> User ID: </td><td> {{form.userID(size=20)}} * </td></tr>
-            <tr><td> Nick Name: </td><td> {{form.nickName(size=20)}} * </td></tr>
-            <tr><td> PassWord: </td><td> {{form.password(size=20)}} * </td></tr>
-            <tr><td> Repeat PassWord: </td><td> {{form.rptpassword(size=20)}} * </td></tr>
+            <tr><td> User ID: </td><td> {{ form.userID(size=20) }} * </td></tr>
+            <tr><td> Nick Name: </td><td> {{ form.nickName(size=20) }} * </td></tr>
+            <tr><td> PassWord: </td><td> {{ form.password(size=20) }} * </td></tr>
+            <tr><td> Repeat PassWord: </td><td> {{ form.rptpassword(size=20) }} * </td></tr>
             <tr>
                 <td></td>
                 <td>

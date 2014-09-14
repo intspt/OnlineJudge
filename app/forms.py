@@ -13,7 +13,7 @@ class RegisterForm(Form):
     rptpassword = PasswordField('rptpassword')
 
     def validate_userID(self):
-        return re.match(r'^[a-zA-Z0-9]{3,22}$', self.userID.data)
+        return re.match(r'^[a-zA-Z0-9]{4,23}$', self.userID.data)
 
     def validate_nickName(self):
         return 5 < len(self.nickName.data) < 23
@@ -24,7 +24,13 @@ class RegisterForm(Form):
     def validate_equal(self):
         return self.password.data == self.rptpassword.data
 
+class LoginForm(Form):
+    userID = TextField('userID')
+    password = PasswordField('password')
 
+    def validate_userID(self):
+        return re.match(r'^[a-zA-Z0-9]{4,23}$', self.userID.data)
 
-
+    def validate_password(self):
+        return re.match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
 
