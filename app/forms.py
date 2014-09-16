@@ -4,33 +4,33 @@
 from flask.ext.wtf import Form
 from wtforms import BooleanField, TextField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo
-import re
+from re import match
 
 class RegisterForm(Form):
-    userID = TextField('userID')
-    nickName = TextField('nickName')
-    password = PasswordField('password')
-    rptpassword = PasswordField('rptpassword')
+    userid = TextField('User ID')
+    nickName = TextField('Nick Name')
+    password = PasswordField('PassWord')
+    rptpassword = PasswordField('Repeat PassWord')
 
-    def validate_userID(self):
-        return re.match(r'^[a-zA-Z0-9]{4,23}$', self.userID.data)
+    def validate_userid(self):
+        return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
 
     def validate_nickName(self):
         return 5 < len(self.nickName.data) < 23
 
     def validate_password(self):
-        return re.match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
+        return match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
 
     def validate_equal(self):
         return self.password.data == self.rptpassword.data
 
 class LoginForm(Form):
-    userID = TextField('userID')
-    password = PasswordField('password')
+    userid = TextField('User ID')
+    password = PasswordField('Password')
 
-    def validate_userID(self):
-        return re.match(r'^[a-zA-Z0-9]{4,23}$', self.userID.data)
+    def validate_userid(self):
+        return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
 
     def validate_password(self):
-        return re.match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
+        return match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
 

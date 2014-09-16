@@ -8,21 +8,27 @@
     position: absolute;
     top: 0;
     right: 0;
-    font-weight: bold;
 }
 #navBar {
+    color: white;
     width: 1000px;
-    background-color: #6589d1;
+    background-color: #1A5CC8;
     margin: 0 auto;
     border-collapse: collapse;
 }
-#navBar td {
+#navBar td{
     text-align: center;
     font-size: 17px;
     width: 133px;
     overflow: scroll;
     border: 1px solid white;
     padding: 4px 7px 4px 7px;
+}
+#navBar td a {
+    color: white;
+}
+#navBar td a:hover {
+    color: red;
 }
 #hello {
     position: relative;
@@ -42,24 +48,49 @@
     margin: 0 auto;
     background-color: #F0FFFF;
 }
-.title {
+#admin {
+    text-decoration: none;
+    color: red;
+    font-weight: bold;
+}
+#title {
     text-align: center;
     color: blue;
     font-size: 29px;
 }
+#left {
+    /*background-color: #F0FFFF;*/
+    width: 99px;
+    line-height: 29px;
+    font-weight: bold;
+}
+#left a {
+    /*color: white;*/
+}
+#left a:hover {
+    color: red;
+}
+#right {
+
+}
+#right a {
+    color: white;
+}
+#right a:hover {
+    color: red;
+}
 .red {
     color: red;
 }
-a:link {
+a {
     text-decoration: none;
-    color: black;
+}
+a:link {
+    color: blue;
 }
 a:visited {
-    color: black;
+    color: blue;
 }
-a:hover { 
-    color: orange;
-}
-a:active { 
-    text-decoration:blink;
+a:hover {
+    color: red;
 }

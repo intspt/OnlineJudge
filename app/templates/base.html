@@ -9,33 +9,36 @@
   <body>
     <div id="wrapper">
         <div id="head">
-            <h1 class="title"> Welcome to Online Judge </h1>
+            <h1 id="title"> Welcome to Online Judge </h1>
         </div>
         <div id="profile">
-            {% if g.user.is_active() %}
-                <a href={{ g.url }}> {{ g.user.userID }} </a>
+            {% if g.user.is_authenticated() %}
+                <a href={{ g.url }}> {{ g.user.userid }} </a>
                 <a href="/logout/"> Logout </a>
+                {% if g.user.is_admin %}
+                    <a href='/admin/' id="admin"> Admin </a>
+                {% endif %}
             {% else %}
                 <a href="/login/"> Login </a>
                 <a href="/register/"> Register </a>
             {% endif %}
         </div>
         <div>
-            <table id="navBar">
+            <table id="navBar"><tr>
                 <td><a href="/"> Home </a></td>
                 <td><a href="/"> Problemset </a></td>
                 <td><a href="/"> Status </a></td>
                 <td><a href="/"> Ranklist </a></td>
                 <td><a href="/"> Contest </a></td>
                 <td><a href="/"> F.A.Qs </a></td>
-            </table>
+            </table></tr>
         </div>
         {% block content %}
         {% endblock %}
         <div id="hello">
             <hr />
             OnlineJudge From Spt<br \>
-            Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com">Me</a>
+            Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com"> Spt </a>
         </div>
     </div>
   </body>

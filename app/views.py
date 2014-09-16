@@ -6,25 +6,38 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, lm
 from models import User
 from forms import RegisterForm, LoginForm
-from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR
+from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR
+
+def admin_required(func):
+    def check():
+        if current_user.is_authenticated() and current_user.is_admin:
+            return func()
+        else:
+            return PERMISSION_ERROR
+    return check
 
 @app.before_request
 def before_request():
     g.user = current_user
-    if g.user.is_active():
-        g.url = url_for('userinfo', userID = g.user.userID)
+    if g.user.is_authenticated():
+        g.url = url_for('userinfo', userid = g.user.userid)
 
 @lm.user_loader
-def load_user(userID):
-    return User.query.get(userID)
+def load_user(userid):
+    return User.query.get(userid)
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/<userID>/')
+@app.route('/admin/')
+@admin_required
+def admin():
+    return render_template('admin.html')
+
+@app.route('/userinfo?userid=<userid>/')
 @login_required
-def userinfo(userID):
+def userinfo(userid):
     return render_template('index.html')
 
 @app.route('/register/', methods = ['GET', 'POST'])
@@ -33,8 +46,8 @@ def register():
     if request.method == 'GET':
         return render_template('register.html', form = form)
     else:
-        user = User(form.userID.data, form.nickName.data, form.password.data)
-        if not form.validate_userID():
+        user = User(form.userid.data, form.nickName.data, form.password.data)
+        if not form.validate_userid():
             error = USERID_ERROR
         elif not form.validate_nickName():
             error = NICKNAME_ERROR
@@ -42,7 +55,7 @@ def register():
             error = PASSWORD_ERROR
         elif not form.validate_equal():
             error = EQUAL_ERROR
-        elif User.query.filter_by(userID = user.userID).first() is not None:
+        elif User.query.filter_by(userid = user.userid).first() is not None:
             error = EXIST_ERROR
         else:
             error = None
@@ -52,8 +65,8 @@ def register():
         else:
             db.session.add(user)
             db.session.commit()
-            login_user(user)
-            return redirect(url_for('userinfo', userID = user.userID))
+            login_user(user, remember = True)
+            return redirect('/')
 
 @app.route('/login/', methods = ['GET', 'POST'])
 def login():
@@ -61,7 +74,7 @@ def login():
     if request.method == 'GET':
         return render_template('login.html', form = form)
     else:
-        user = User.query.filter_by(userID = form.userID.data).first()
+        user = User.query.filter_by(userid = form.userid.data).first()
         if user is None:
             error = CHECK_USERID_ERROR
         elif user.password != form.password.data:
@@ -72,7 +85,7 @@ def login():
         if error:
             return render_template('login.html', form = form, error = error)
         else:
-            login_user(user)
+            login_user(user, remember = True)
             return redirect('/')
 
 @app.route('/logout/')

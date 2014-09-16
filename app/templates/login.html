@@ -3,13 +3,20 @@
 <div>
     <form action="/login/" method="POST">
         {{ form.csrf_token }}
+        {% with message = get_flashed_messages() %}
+            {% if message %}
+                <center><h3 class="red">
+                    {{ message[0] }}
+                </h3></center>
+            {% endif %}
+        {% endwith %}
         {% if error %}
             <center><h3 class="red">
                 {{ error }}
             </h3></center>
         {% endif %}
         <table id="login">
-            <tr><td> User ID: </td><td> {{ form.userID(size=20) }} </td></tr>
+            <tr><td> User ID: </td><td> {{ form.userid(size=20) }} </td></tr>
             <tr><td> PassWord: </td><td> {{ form.password(size=20) }} </td></tr>
             <tr>
                 <td></td>
