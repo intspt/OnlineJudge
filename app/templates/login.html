@@ -1,31 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    <form action="/login/" method="POST">
-        {{ form.csrf_token }}
-        {% with message = get_flashed_messages() %}
-            {% if message %}
-                <center><h3 class="red">
-                    {{ message[0] }}
-                </h3></center>
-            {% endif %}
-        {% endwith %}
-        {% if error %}
+    {{ form.csrf_token }}
+    <h2><center> Login Information </center></h2>
+    {% with message = get_flashed_messages() %}
+        {% if message %}
             <center><h3 class="red">
-                {{ error }}
+                {{ message[0] }}
             </h3></center>
         {% endif %}
+    {% endwith %}
+    <form action="/login/" method="POST">
         <table id="login">
-            <tr><td> User ID: </td><td> {{ form.userid(size=20) }} </td></tr>
-            <tr><td> PassWord: </td><td> {{ form.password(size=20) }} </td></tr>
+            <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
+            <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>
             <tr>
                 <td></td>
                 <td>
-                    <input value="Submit" name="submit" type="submit">
-                    <input value="Reset" name="reset" type="reset">
+                    <input value="Submit" type="submit" name="submit">
+                    <input value="Reset" type="reset" name="reset">
                 </td>
             </tr>
         </table>
-        </form>
+    </form>
 </div>
 {% endblock %}

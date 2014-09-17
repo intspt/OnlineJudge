@@ -1,13 +1,21 @@
 #wrapper {
-    position: absolute;
-    width: 95%;
-    left: 2.5%;
+    position: relative;
+    width: 1111px;
     min-height: 100%;
+    margin: 0 auto;
+}
+#wrapper2 {
+    position: relative;
+    width: 1000px;
+    top: 20px;
+    margin: 0 auto;
 }
 #profile {
+    font-weight: bold;
     position: absolute;
-    top: 0;
-    right: 0;
+    text-align: right;
+    top: 0px;
+    width: 100%;
 }
 #navBar {
     color: white;
@@ -58,29 +66,48 @@
     color: blue;
     font-size: 29px;
 }
+#addproblem {
+    width: 80%;
+    margin: 0 auto;
+}
 #left {
-    /*background-color: #F0FFFF;*/
-    width: 99px;
-    line-height: 29px;
+    width: 111px;
+    text-align: center;
     font-weight: bold;
+    color: blue;
 }
-#left a {
-    /*color: white;*/
+#ptitle {
+    width: 99%;
 }
-#left a:hover {
-    color: red;
+#desc {
+    width: 99%;
+    height: 233px;
 }
-#right {
-
+#input {
+    width: 99%;
+    height: 210px;
 }
-#right a {
-    color: white;
+#output {
+    width: 99%;
+    height: 210px;
 }
-#right a:hover {
-    color: red;
+#sinput {
+    width: 99%;
+    height: 99px;
+}
+#soutput {
+    width: 99%;
+    height: 99px;
+}
+#hint {
+    width: 99%;
+    height: 99px;
 }
 .red {
     color: red;
+}
+.green {
+    color: green;
 }
 a {
     text-decoration: none;

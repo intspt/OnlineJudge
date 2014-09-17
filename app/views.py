@@ -1,14 +1,18 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 
-from flask import render_template, request, g, redirect, url_for
+import os
+from functools import wraps
+from flask import render_template, request, g, redirect, url_for, flash
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from models import User
-from forms import RegisterForm, LoginForm
-from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR
+from models import User, Problem
+from forms import RegisterForm, LoginForm, ProblemForm
+from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
+                    CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, UPLOAD_SUCCESS
 
 def admin_required(func):
+    @wraps(func)
     def check():
         if current_user.is_authenticated() and current_user.is_admin:
             return func()
@@ -42,7 +46,7 @@ def userinfo(userid):
 
 @app.route('/register/', methods = ['GET', 'POST'])
 def register():
-    form = RegisterForm(request.form)    
+    form = RegisterForm()
     if request.method == 'GET':
         return render_template('register.html', form = form)
     else:
@@ -61,7 +65,8 @@ def register():
             error = None
 
         if error:
-            return render_template('register.html', form = form, error = error)
+            flash(error)
+            return render_template('register.html', form = form)
         else:
             db.session.add(user)
             db.session.commit()
@@ -70,7 +75,7 @@ def register():
 
 @app.route('/login/', methods = ['GET', 'POST'])
 def login():
-    form = LoginForm(request.form)
+    form = LoginForm()
     if request.method == 'GET':
         return render_template('login.html', form = form)
     else:
@@ -83,7 +88,8 @@ def login():
             error = None
 
         if error:
-            return render_template('login.html', form = form, error = error)
+            flash(error)
+            return render_template('login.html', form = form)
         else:
             login_user(user, remember = True)
             return redirect('/')
@@ -95,4 +101,29 @@ def logout():
 
 @app.route('/problemset/')
 def problemset():
-    return render_template('base.html')
+    return render_template('problemset.html')
+
+@app.route('/admin/problemset/')
+@admin_required
+def admin_problemset():
+    return render_template('admin_problemset.html')
+
+@app.route('/admin/problemset/addproblem/', methods = ['GET', 'POST'])
+@admin_required
+def addproblem():
+    form = ProblemForm(request.form)
+    if request.method == 'GET':
+        return render_template('admin_addproblem.html', form = form)
+    else:
+        inputfile = request.files['inputfile']
+        outputfile = request.files['outputfile']
+        problem_count = Problem.query.count()
+        inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'in'])))
+        outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'out'])))
+        problem = Problem(form.title.data, form.desc.data, form.pinput.data, \
+            form.poutput.data, form.sinput.data, form.soutput.data, form.hint.data)
+
+        db.session.add(problem)
+        db.session.commit()
+        flash(UPLOAD_SUCCESS)
+        return redirect('/admin/problemset/')

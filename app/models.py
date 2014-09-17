@@ -28,7 +28,7 @@ class User(db.Model):
         return self.userid
 
 class Problem(db.Model):
-    pid = db.Column(db.Integer, primary_key = True)
+    pid = db.Column(db.Integer, primary_key = True, default = None)
     title = db.Column(db.String(299))
     desc = db.Column(db.String(9999))
     pinput = db.Column(db.String(9999))
@@ -37,8 +37,7 @@ class Problem(db.Model):
     soutput = db.Column(db.String(9999))
     hint = db.Column(db.String(9999))
 
-    def __init__(self, pid, title, desc, pinput, poutput, sinput, soutput, hint = None):
-        self.pid = pid
+    def __init__(self, title, desc, pinput, poutput, sinput, soutput, hint):
         self.title = title
         self.desc = desc
         self.pinput = pinput

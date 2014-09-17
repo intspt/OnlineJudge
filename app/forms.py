@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 
 from flask.ext.wtf import Form
-from wtforms import BooleanField, TextField, PasswordField
-from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms import BooleanField, TextField, PasswordField, TextAreaField
+from wtforms.validators import Length
 from re import match
 
 class RegisterForm(Form):
@@ -24,6 +24,9 @@ class RegisterForm(Form):
     def validate_equal(self):
         return self.password.data == self.rptpassword.data
 
+    def __repr__(self):
+        return str(self.userid.data)
+
 class LoginForm(Form):
     userid = TextField('User ID')
     password = PasswordField('Password')
@@ -34,3 +37,14 @@ class LoginForm(Form):
     def validate_password(self):
         return match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)
 
+    def __repr__(self):
+        return str(self.userid.data)
+
+class ProblemForm(Form):
+    title = TextField('Title', [Length(max = 299)])
+    desc = TextAreaField('Description', [Length(max = 9999)])
+    pinput = TextAreaField('Input', [Length(max = 9999)])
+    poutput = TextAreaField('Output', [Length(max = 9999)])
+    sinput = TextAreaField('Sample Input', [Length(max = 9999)])
+    soutput = TextAreaField('Sample Output', [Length(max = 9999)])
+    hint = TextAreaField('Hint', [Length(max = 9999)])

@@ -1,0 +1,12 @@
+{% extends "admin_base.html" %}
+{% block content %}
+{% with message = get_flashed_messages() %}
+    {% if message %}
+        <center><h3 class="red">
+            {{ message[0] }}
+        </h3></center>
+    {% endif %}
+{% endwith %}
+<a href="/admin/problemset/addproblem/"> Add Problem </a>
+<hr />
+{% endblock %}

@@ -1,27 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
+    {{ form.csrf_token }}
+    <h2><center> Register Information </center></h2>
+    {% with message = get_flashed_messages() %}
+        {% if message %}
+            <center><h3 class="red">
+                {{ message[0] }}
+            </h3></center>
+        {% endif %}
+    {% endwith %}
     <form action="/register/" method="POST">
-        {{ form.csrf_token }}
-        <center><h2> Register Information </h2></center>
-        <center><h3 class="red">
-            {% if error %}
-                {{ error }}
-            {% endif %}
-        </h3></center>
         <table id="register">
-            <tr><td> User ID: </td><td> {{ form.userid(size=20) }} * </td></tr>
-            <tr><td> Nick Name: </td><td> {{ form.nickName(size=20) }} * </td></tr>
-            <tr><td> PassWord: </td><td> {{ form.password(size=20) }} * </td></tr>
-            <tr><td> Repeat PassWord: </td><td> {{ form.rptpassword(size=20) }} * </td></tr>
+            <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
+            <tr><td> Nick Name: </td><td> {{ form.nickname(id="") }} * </tr>
+            <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>
+            <tr><td> Repeat PassWord: </td><td> {{ form.rptpassword(id="") }} * </td></tr>
             <tr>
                 <td></td>
                 <td>
-                    <input value="Submit" name="submit" type="submit">
-                    <input value="Reset" name="reset" type="reset">
+                    <input value="Submit" type="submit">
+                    <input value="Reset" type="reset">
                 </td>
             </tr>
         </table>
-        </form>
+    </form>
 </div>
 {% endblock %}
