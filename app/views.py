@@ -6,10 +6,11 @@ from functools import wraps
 from flask import render_template, request, g, redirect, url_for, flash
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from models import User, Problem
+from models import User, Problem, Notification
 from forms import RegisterForm, LoginForm, ProblemForm
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
-                    CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, UPLOAD_SUCCESS
+                    CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, \
+                    UPLOAD_SUCCESS, PAGENUMBER_ERROR
 
 def admin_required(func):
     @wraps(func)
@@ -23,6 +24,8 @@ def admin_required(func):
 @app.before_request
 def before_request():
     g.user = current_user
+    tmp = Notification.query.order_by('notification_mid DESC').all()
+    print Notification.query.order_by('notification_mid DESC')
     if g.user.is_authenticated():
         g.url = url_for('userinfo', userid = g.user.userid)
 
@@ -100,8 +103,14 @@ def logout():
     return redirect('/')
 
 @app.route('/problemset/')
-def problemset():
-    return render_template('problemset.html')
+@app.route('/problemset/pn=<int:pn>/')
+def problemset(pn = 1):
+    problem_count = Problem.query.count()
+    if (pn - 1) * 100 > problem_count:
+        return PAGENUMBER_ERROR
+    else:
+        problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
+        return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/admin/problemset/')
 @admin_required

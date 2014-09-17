@@ -8,7 +8,7 @@ from re import match
 
 class RegisterForm(Form):
     userid = TextField('User ID')
-    nickName = TextField('Nick Name')
+    nickname = TextField('Nick Name')
     password = PasswordField('PassWord')
     rptpassword = PasswordField('Repeat PassWord')
 
@@ -16,7 +16,7 @@ class RegisterForm(Form):
         return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
 
     def validate_nickName(self):
-        return 5 < len(self.nickName.data) < 23
+        return 5 < len(self.nickname.data) < 23
 
     def validate_password(self):
         return match(r'^[a-zA-Z0-9]{6,22}$', self.password.data)

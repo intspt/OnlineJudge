@@ -20,6 +20,7 @@ CHECK_PASSWORD_ERROR = 'Password is not correct!'
 PERMISSION_ERROR = 'You are not authorized to access this page!'
 INPUT_ERROR = 'Input Limit Exceeded!'
 UPLOAD_SUCCESS = 'Uploaded successfully'
+PAGENUMBER_ERROR = 'Illegal page number!'
 
 ADMIN_USERID = 'rikka'
 ADMIN_NICKNAME = 'rikka'

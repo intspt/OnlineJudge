@@ -45,3 +45,11 @@ class Problem(db.Model):
         self.sinput = sinput
         self.soutput = soutput
         self.hint = hint
+
+class Notification(db.Model):
+    mid = db.Column(db.Integer, primary_key = True, default = None)
+    message = db.Column(db.String(86))
+    vis = db.Column(db.Boolean, default = True)
+
+    def __init__(self, message):
+        self.message = message
