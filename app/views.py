@@ -27,8 +27,6 @@ def before_request():
     tmp = Notification.query.order_by('notification_mid DESC').all()
     if tmp and tmp[0].visable:
         g.message = tmp[0].message
-    if g.user.is_authenticated():
-        g.url = url_for('userinfo', userid = g.user.userid)
 
 @lm.user_loader
 def load_user(userid):
@@ -99,7 +97,7 @@ def logout():
     return redirect('/')
 
 @app.route('/problemset/')
-@app.route('/problemset/pn=<int:pn>/')
+@app.route('/problemset/<int:pn>/')
 def problemset(pn = 1):
     problem_count = Problem.query.count()
     if (pn - 1) * 100 > problem_count:
@@ -107,6 +105,10 @@ def problemset(pn = 1):
     else:
         problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
         return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
+
+@app.route('/showproblem/<int:pid>/')
+def show_problem(pid):
+    return render_template('showproblem.html')
 
 @app.route('/admin/')
 @admin_required

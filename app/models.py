@@ -5,8 +5,8 @@ from app import db
 
 class User(db.Model):
     userid = db.Column(db.String(22), primary_key = True)
-    nickname = db.Column(db.String(22))
-    password = db.Column(db.String(120))
+    nickname = db.Column(db.Text)
+    password = db.Column(db.Text)
     is_admin = db.Column(db.Boolean)
 
     def __init__(self, userid, nickname, password, is_admin = False):
@@ -29,13 +29,13 @@ class User(db.Model):
 
 class Problem(db.Model):
     pid = db.Column(db.Integer, primary_key = True, default = None)
-    title = db.Column(db.String(299))
-    desc = db.Column(db.String(9999))
-    pinput = db.Column(db.String(9999))
-    poutput = db.Column(db.String(9999))
-    sinput = db.Column(db.String(9999))
-    soutput = db.Column(db.String(9999))
-    hint = db.Column(db.String(9999))
+    title = db.Column(db.Text)
+    desc = db.Column(db.Text)
+    pinput = db.Column(db.Text)
+    poutput = db.Column(db.Text)
+    sinput = db.Column(db.Text)
+    soutput = db.Column(db.Text)
+    hint = db.Column(db.Text)
     ac_count = db.Column(db.Integer, default = 0)
     submit_count = db.Column(db.Integer, default = 0)
 
@@ -50,7 +50,7 @@ class Problem(db.Model):
 
 class Notification(db.Model):
     mid = db.Column(db.Integer, primary_key = True, default = None)
-    message = db.Column(db.String(80))
+    message = db.Column(db.Text)
     visable = db.Column(db.Boolean, default = True)
 
     def __init__(self, message):
