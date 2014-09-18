@@ -36,6 +36,8 @@ class Problem(db.Model):
     sinput = db.Column(db.String(9999))
     soutput = db.Column(db.String(9999))
     hint = db.Column(db.String(9999))
+    ac_count = db.Column(db.Integer, default = 0)
+    submit_count = db.Column(db.Integer, default = 0)
 
     def __init__(self, title, desc, pinput, poutput, sinput, soutput, hint):
         self.title = title
@@ -48,8 +50,8 @@ class Problem(db.Model):
 
 class Notification(db.Model):
     mid = db.Column(db.Integer, primary_key = True, default = None)
-    message = db.Column(db.String(86))
-    vis = db.Column(db.Boolean, default = True)
+    message = db.Column(db.String(80))
+    visable = db.Column(db.Boolean, default = True)
 
     def __init__(self, message):
         self.message = message

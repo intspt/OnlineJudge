@@ -34,8 +34,8 @@
             </table></tr>
         </div>
         <div id="notification">
-            {% if notification %}
-                {{ notification }}
+            {% if g.message %}
+                {{ g.message }}
             {% endif %}
         </div>
         {% block content %}

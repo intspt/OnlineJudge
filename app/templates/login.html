@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    {{ form.csrf_token }}
     <h2><center> Login Information </center></h2>
     {% with message = get_flashed_messages() %}
         {% if message %}
@@ -11,6 +10,7 @@
         {% endif %}
     {% endwith %}
     <form action="/login/" method="POST">
+        {{ form.csrf_token }}
         <table id="login">
             <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
             <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>

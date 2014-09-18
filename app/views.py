@@ -7,10 +7,10 @@ from flask import render_template, request, g, redirect, url_for, flash
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
 from models import User, Problem, Notification
-from forms import RegisterForm, LoginForm, ProblemForm
+from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
                     CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, \
-                    UPLOAD_SUCCESS, PAGENUMBER_ERROR
+                    UPLOAD_SUCCESS, PAGENUMBER_ERROR, ADD_NOTIFICATION_SUCCESS
 
 def admin_required(func):
     @wraps(func)
@@ -25,7 +25,8 @@ def admin_required(func):
 def before_request():
     g.user = current_user
     tmp = Notification.query.order_by('notification_mid DESC').all()
-    print Notification.query.order_by('notification_mid DESC')
+    if tmp and tmp[0].visable:
+        g.message = tmp[0].message
     if g.user.is_authenticated():
         g.url = url_for('userinfo', userid = g.user.userid)
 
@@ -36,11 +37,6 @@ def load_user(userid):
 @app.route('/')
 def home():
     return render_template('index.html')
-
-@app.route('/admin/')
-@admin_required
-def admin():
-    return render_template('admin.html')
 
 @app.route('/userinfo?userid=<userid>/')
 @login_required
@@ -112,6 +108,11 @@ def problemset(pn = 1):
         problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
         return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
+@app.route('/admin/')
+@admin_required
+def admin():
+    return render_template('admin.html')
+
 @app.route('/admin/problemset/')
 @admin_required
 def admin_problemset():
@@ -119,7 +120,7 @@ def admin_problemset():
 
 @app.route('/admin/problemset/addproblem/', methods = ['GET', 'POST'])
 @admin_required
-def addproblem():
+def admin_addproblem():
     form = ProblemForm(request.form)
     if request.method == 'GET':
         return render_template('admin_addproblem.html', form = form)
@@ -136,3 +137,20 @@ def addproblem():
         db.session.commit()
         flash(UPLOAD_SUCCESS)
         return redirect('/admin/problemset/')
+
+@app.route('/admin/notification/', methods = ['GET', 'POST'])
+@admin_required
+def admin_notification():
+    form = NotificationForm()
+    if request.method == 'GET':
+        return render_template('admin_notification.html', form = form)
+    else:
+        if not form.validate_on_submit():
+            flash(INPUT_ERROR)
+        else:
+            notification = Notification(form.message.data)
+            db.session.add(notification)
+            db.session.commit()
+            flash(ADD_NOTIFICATION_SUCCESS)
+
+        return redirect('/admin/notification/')

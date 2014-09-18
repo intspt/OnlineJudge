@@ -1,0 +1,20 @@
+{% extends "admin_base.html" %}
+{% block content %}
+{% with message = get_flashed_messages() %}
+    {% if message %}
+        <center><h3 class="red">
+            {{ message[0] }}
+        </h3></center>
+    {% endif %}
+{% endwith %}
+<form action='/admin/notification/' method="POST">
+    {{ form.csrf_token }}
+    <table>
+        <tr>
+            <td style="color:red; font-weight:bold"> Add Notification </td>
+            <td> {{ form.message(size=94) }} </td>
+            <td><input value="Submit" type="submit"></td></tr>
+    </table>
+</form>
+<hr />
+{% endblock %}

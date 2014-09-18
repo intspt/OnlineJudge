@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    {{ form.csrf_token }}
     <h2><center> Register Information </center></h2>
     {% with message = get_flashed_messages() %}
         {% if message %}
@@ -11,6 +10,7 @@
         {% endif %}
     {% endwith %}
     <form action="/register/" method="POST">
+        {{ form.csrf_token }}
         <table id="register">
             <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
             <tr><td> Nick Name: </td><td> {{ form.nickname(id="") }} * </tr>

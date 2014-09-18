@@ -7,10 +7,10 @@ from wtforms.validators import Length
 from re import match
 
 class RegisterForm(Form):
-    userid = TextField('User ID')
-    nickname = TextField('Nick Name')
-    password = PasswordField('PassWord')
-    rptpassword = PasswordField('Repeat PassWord')
+    userid = TextField()
+    nickname = TextField()
+    password = PasswordField()
+    rptpassword = PasswordField()
 
     def validate_userid(self):
         return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
@@ -28,8 +28,8 @@ class RegisterForm(Form):
         return str(self.userid.data)
 
 class LoginForm(Form):
-    userid = TextField('User ID')
-    password = PasswordField('Password')
+    userid = TextField()
+    password = PasswordField()
 
     def validate_userid(self):
         return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
@@ -41,10 +41,13 @@ class LoginForm(Form):
         return str(self.userid.data)
 
 class ProblemForm(Form):
-    title = TextField('Title', [Length(max = 299)])
-    desc = TextAreaField('Description', [Length(max = 9999)])
-    pinput = TextAreaField('Input', [Length(max = 9999)])
-    poutput = TextAreaField('Output', [Length(max = 9999)])
-    sinput = TextAreaField('Sample Input', [Length(max = 9999)])
-    soutput = TextAreaField('Sample Output', [Length(max = 9999)])
-    hint = TextAreaField('Hint', [Length(max = 9999)])
+    title = TextField([Length(max = 299)])
+    desc = TextAreaField([Length(max = 9999)])
+    pinput = TextAreaField([Length(max = 9999)])
+    poutput = TextAreaField([Length(max = 9999)])
+    sinput = TextAreaField([Length(max = 9999)])
+    soutput = TextAreaField([Length(max = 9999)])
+    hint = TextAreaField([Length(max = 9999)])
+
+class NotificationForm(Form):
+    message = TextField([Length(max = 80)])
