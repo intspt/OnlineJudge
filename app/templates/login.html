@@ -11,14 +11,15 @@
     {% endwith %}
     <form action="/login/" method="POST">
         {{ form.csrf_token }}
+        {{ form.next_url }}
         <table id="login">
             <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
             <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>
             <tr>
                 <td></td>
                 <td>
-                    <input value="Submit" type="submit" name="submit">
-                    <input value="Reset" type="reset" name="reset">
+                    <input type="submit" value="Submit" >
+                    <input type="reset" value="Reset">
                 </td>
             </tr>
         </table>

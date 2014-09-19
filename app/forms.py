@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from flask.ext.wtf import Form
-from wtforms import BooleanField, TextField, PasswordField, TextAreaField
+from wtforms import BooleanField, TextField, PasswordField, TextAreaField, HiddenField
 from wtforms.validators import Length
 from re import match
 
@@ -30,6 +30,7 @@ class RegisterForm(Form):
 class LoginForm(Form):
     userid = TextField()
     password = PasswordField()
+    next_url = HiddenField()
 
     def validate_userid(self):
         return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
@@ -41,13 +42,15 @@ class LoginForm(Form):
         return str(self.userid.data)
 
 class ProblemForm(Form):
-    title = TextField([Length(max = 299)])
-    desc = TextAreaField([Length(max = 9999)])
-    pinput = TextAreaField([Length(max = 9999)])
-    poutput = TextAreaField([Length(max = 9999)])
-    sinput = TextAreaField([Length(max = 9999)])
-    soutput = TextAreaField([Length(max = 9999)])
-    hint = TextAreaField([Length(max = 9999)])
+    title = TextField()
+    desc = TextAreaField()
+    pinput = TextAreaField()
+    poutput = TextAreaField()
+    sinput = TextAreaField()
+    soutput = TextAreaField()
+    hint = TextAreaField()
+    time_limit = TextField()
+    memory_limit = TextField()
 
 class NotificationForm(Form):
     message = TextField([Length(max = 80)])

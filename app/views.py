@@ -21,6 +21,9 @@ def admin_required(func):
             return PERMISSION_ERROR
     return check
 
+def redirect_url():
+    pass
+
 @app.before_request
 def before_request():
     g.user = current_user
@@ -72,7 +75,7 @@ def register():
 
 @app.route('/login/', methods = ['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = LoginForm(next_url = request.args.get('next'))
     if request.method == 'GET':
         return render_template('login.html', form = form)
     else:
@@ -89,13 +92,13 @@ def login():
             return render_template('login.html', form = form)
         else:
             login_user(user, remember = True)
-            return redirect('/')
+            return redirect(form.next_url.data or '/')
 
 @app.route('/logout/')
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(request.referrer or '/')
 
 @app.route('/problemset/')
 @app.route('/problemset/<int:pn>/')
@@ -110,7 +113,6 @@ def problemset(pn = 1):
 @app.route('/showproblem/<int:pid>/')
 def show_problem(pid):
     problem = Problem.query.filter_by(pid = pid).first()
-    print problem
     return render_template('showproblem.html', problem = problem)
 
 @app.route('/submit/<int:pid>/', methods = ['GET', 'POST'])
@@ -147,7 +149,8 @@ def admin_add_problem():
         inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'in'])))
         outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'out'])))
         problem = Problem(form.title.data, form.desc.data, form.pinput.data, \
-            form.poutput.data, form.sinput.data, form.soutput.data, form.hint.data)
+            form.poutput.data, form.sinput.data, form.soutput.data, form.hint.data, \
+            form.time_limit.data, form.memory_limit.data)
 
         db.session.add(problem)
         db.session.commit()
@@ -164,14 +167,14 @@ def admin_edit_problem(pid):
 def admin_hide_problem(pid):
     Problem.query.filter_by(pid = pid).update({"visable" : False})
     db.session.commit()
-    return redirect('/admin/problemset/')
+    return redirect(request.referrer)
 
 @app.route('/admin/displayproblem/<int:pid>/')
 @admin_required
 def admin_display_problem(pid):
     Problem.query.filter_by(pid = pid).update({"visable" : True})
     db.session.commit()
-    return redirect('/admin/problemset/')
+    return redirect(request.referrer)
 
 @app.route('/admin/notification/', methods = ['GET', 'POST'])
 @admin_required
@@ -188,4 +191,4 @@ def admin_notification():
             db.session.commit()
             flash(ADD_NOTIFICATION_SUCCESS)
 
-        return redirect('/admin/notification/')
+        return redirect(request.referrer)

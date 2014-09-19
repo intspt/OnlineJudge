@@ -5,6 +5,8 @@
     {{ form.csrf_token }}
     <table id="addproblem">
         <tr><td id="left"> Title </td><td> {{ form.title(id="ptitle") }}</td></tr>
+        <tr><td id="left"> Time Limit </td><td> {{ form.time_limit }} MS </td></tr>
+        <tr><td id="left"> Memory Limit </td><td> {{ form.time_limit }} K </td></tr>
         <tr><td id="left"> Description </td><td> {{ form.desc(id="desc") }} </td></tr>
         <tr><td id="left"> Input </td><td> {{ form.pinput(id="input") }} </td></tr>
         <tr><td id="left"> Output </td><td> {{ form.poutput(id="output") }} </td></tr>

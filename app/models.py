@@ -36,11 +36,13 @@ class Problem(db.Model):
     sinput = db.Column(db.Text)
     soutput = db.Column(db.Text)
     hint = db.Column(db.Text)
+    time_limit = db.Column(db.Integer)
+    memory_limit = db.Column(db.Integer)
     ac_count = db.Column(db.Integer, default = 0)
     submit_count = db.Column(db.Integer, default = 0)
     visable = db.Column(db.Boolean, default = True)
 
-    def __init__(self, title, desc, pinput, poutput, sinput, soutput, hint):
+    def __init__(self, title, desc, pinput, poutput, sinput, soutput, hint, time_limit, memory_limit):
         self.title = title
         self.desc = desc
         self.pinput = pinput
@@ -48,6 +50,8 @@ class Problem(db.Model):
         self.sinput = sinput
         self.soutput = soutput
         self.hint = hint
+        self.time_limit = time_limit
+        self.memory_limit = memory_limit
 
 class Notification(db.Model):
     mid = db.Column(db.Integer, primary_key = True, default = None)
