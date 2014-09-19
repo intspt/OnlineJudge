@@ -1,5 +1,6 @@
 {% extends "admin_base.html" %}
 {% block content %}
+<title> Admin Problem Set </title>
 {% with message = get_flashed_messages() %}
     {% if message %}
         <center><h3 class="red">
@@ -9,4 +10,46 @@
 {% endwith %}
 <a href="/admin/problemset/addproblem/"> Add Problem </a>
 <hr />
+<center>
+{% for i in range(1, problem_count // 100 + 2) %}
+    {% if pn == i %}
+        {{ i }}
+    {% else %}
+        <a href="/problemset/pn={{ i }}"> {{ i }} </a>
+    {% endif %}
+{% endfor %}
+</center>
+<table id="problemset">
+    <tr>
+        <th id="ps_pid"> Problem ID </th>
+        <th id="ps_title"> Title </th>
+        <th id="ps_ac"> Edit </th>
+        <th id="ps_submit"> Hide </th>
+    </tr>
+    {% for problem in problem_list %}
+        {% if problem.pid % 2 %}
+            <tr>
+                <td> {{ problem.pid + 1000 }} </td>
+                <td align="left"> {{ problem.title }} </td>
+                <td><a href="{{ url_for('admin_edit_problem', pid = problem.pid) }}"> Edit </a></td>
+                {% if problem.visable %}
+                    <td><a href="/admin/hideproblem/{{ problem.pid }}/"> Hide </a></td>
+                {% else %}
+                    <td><a href="/admin/displayproblem/{{ problem.pid }}/"> Display </a></td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr style="background-color:#D7EBFF">
+                <td> {{ problem.pid + 1000 }} </td>
+                <td align="left"> {{ problem.title }} </td>
+                <td><a href="{{ url_for('admin_edit_problem', pid = problem.pid) }}"> Edit </a></td>
+                {% if problem.visable %}
+                    <td><a href="/admin/hideproblem/{{ problem.pid }}/"> Hide </a></td>
+                {% else %}
+                    <td><a href="/admin/displayproblem/{{ problem.pid }}/"> Display </a></td>
+                {% endif %}
+            </tr>
+        {% endif %}
+    {% endfor %}
+</table>
 {% endblock %}

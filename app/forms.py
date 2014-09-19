@@ -51,3 +51,6 @@ class ProblemForm(Form):
 
 class NotificationForm(Form):
     message = TextField([Length(max = 80)])
+
+class SubmitForm(Form):
+    pass

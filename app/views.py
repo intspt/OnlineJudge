@@ -14,9 +14,9 @@ from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EX
 
 def admin_required(func):
     @wraps(func)
-    def check():
+    def check(**args):
         if current_user.is_authenticated() and current_user.is_admin:
-            return func()
+            return func(**args)
         else:
             return PERMISSION_ERROR
     return check
@@ -92,6 +92,7 @@ def login():
             return redirect('/')
 
 @app.route('/logout/')
+@login_required
 def logout():
     logout_user()
     return redirect('/')
@@ -103,12 +104,19 @@ def problemset(pn = 1):
     if (pn - 1) * 100 > problem_count:
         return PAGENUMBER_ERROR
     else:
-        problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
+        problem_list = Problem.query.filter_by(visable = True).order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
         return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/showproblem/<int:pid>/')
 def show_problem(pid):
-    return render_template('showproblem.html')
+    problem = Problem.query.filter_by(pid = pid).first()
+    print problem
+    return render_template('showproblem.html', problem = problem)
+
+@app.route('/submit/<int:pid>/', methods = ['GET', 'POST'])
+@login_required
+def submit(pid):
+    return render_template('submit.html', pid = pid)
 
 @app.route('/admin/')
 @admin_required
@@ -116,13 +124,19 @@ def admin():
     return render_template('admin.html')
 
 @app.route('/admin/problemset/')
+@app.route('/admin/problemset/<int:pn>')
 @admin_required
-def admin_problemset():
-    return render_template('admin_problemset.html')
+def admin_problemset(pn = 1):
+    problem_count = Problem.query.count()
+    if (pn - 1) * 100 > problem_count:
+        return PAGENUMBER_ERROR
+    else:
+        problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
+        return render_template('admin_problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/admin/problemset/addproblem/', methods = ['GET', 'POST'])
 @admin_required
-def admin_addproblem():
+def admin_add_problem():
     form = ProblemForm(request.form)
     if request.method == 'GET':
         return render_template('admin_addproblem.html', form = form)
@@ -139,6 +153,25 @@ def admin_addproblem():
         db.session.commit()
         flash(UPLOAD_SUCCESS)
         return redirect('/admin/problemset/')
+
+@app.route('/admin/editproblem/<int:pid>/')
+@admin_required
+def admin_edit_problem(pid):
+    return render_template('admin_editproblem.html')
+
+@app.route('/admin/hideproblem/<int:pid>/')
+@admin_required
+def admin_hide_problem(pid):
+    Problem.query.filter_by(pid = pid).update({"visable" : False})
+    db.session.commit()
+    return redirect('/admin/problemset/')
+
+@app.route('/admin/displayproblem/<int:pid>/')
+@admin_required
+def admin_display_problem(pid):
+    Problem.query.filter_by(pid = pid).update({"visable" : True})
+    db.session.commit()
+    return redirect('/admin/problemset/')
 
 @app.route('/admin/notification/', methods = ['GET', 'POST'])
 @admin_required
