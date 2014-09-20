@@ -2,7 +2,7 @@
 {% block content %}
 <div id="problem">
     <title> {{ problem.title }} </title>
-    <center><span style="font-size:29px; font-weight:bold; color:blue"> {{ problem.title }} </span></center>
+    <h2 class="center blue"> {{ problem.title }} </h2>
     <table>
         <tr>
             <td><b> Time Limit: </b> {{ problem.time_limit }} MS </td>
@@ -15,46 +15,46 @@
             <td><b> Accepted: </b> {{ problem.ac_count }} </td>
         </tr>
     </table>
-    <h2> Description </h2>
+    <h3> Description </h3>
     <div>
         {% autoescape false %}
-        {{ problem.desc }}
+            {{ problem.desc.replace('\n', '<br />') }}
+        {% endautoescape %}
     </div>
-    <h2> Input </h2>
+    <h3> Input </h3>
     <div>
         {% autoescape false %}
-        {{ problem.pinput }}
+            {{ problem.pinput.replace('\n', '<br />') }}
         {% endautoescape %}
     </div>
-    <h2> Output </h2>
+    <h3> Output </h3>
     <div>
         {% autoescape false %}
-        {{ problem.poutput }}
+            {{ problem.poutput.replace('\n', '<br />') }}
         {% endautoescape %}
     </div>
-    <h2> Sample Input </h2>
+    <h3> Sample Input </h3>
     <div>
         {% autoescape false %}
-        {{ problem.sinput }}
+            {{ problem.sinput.replace('\n', '<br />') }}
         {% endautoescape %}
     </div>
-    <h2> Sample Output </h2>
+    <h3> Sample Output </h3>
     <div>
         {% autoescape false %}
-            {{ problem.soutput }}
-        {% endautoescape %}
+            {{ problem.soutput.replace('\n', '<br />') }}
         {% endautoescape %}
     </div>
-    <h2> Hint </h2>
+    <h3> Hint </h3>
     <div>
         {% autoescape false %}
             {{ problem.hint.replace('\n', '<br />') }}
         {% endautoescape %}
     </div>
 </div>
-<center>
-    [<a href={{ url_for('submit', pid = problem.pid) }}>Submit</a>]
+<div class="center">
+    [<a href={{ url_for('submit_problem', pid = problem.pid) }}>Submit</a>]
     Status
     Discuss
-</center>
+</div>
 {% endblock %}

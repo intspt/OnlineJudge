@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from app import db
+from config import PING
 
 class User(db.Model):
     userid = db.Column(db.String(22), primary_key = True)
@@ -53,10 +54,31 @@ class Problem(db.Model):
         self.time_limit = time_limit
         self.memory_limit = memory_limit
 
+class Submit(db.Model):
+    runid = db.Column(db.Integer, primary_key = True)
+    userid = db.Column(db.String(22))
+    pid = db.Column(db.Integer)
+    result = db.Column(db.String(22), default = PING)
+    memory_used = db.Column(db.Integer, default = None)
+    time_used = db.Column(db.Integer, default = None)
+    language = db.Column(db.String(9))
+    src = db.Column(db.Text)
+    submit_time = db.Column(db.String(19))
+
+    def __init__(self, runid, userid, pid, language, src, submit_time):
+        self.runid = runid
+        self.userid = userid
+        self.pid = pid
+        self.language = language
+        self.src = src
+        self.submit_time = submit_time
+
 class Notification(db.Model):
     mid = db.Column(db.Integer, primary_key = True, default = None)
-    message = db.Column(db.Text)
+    content = db.Column(db.Text)
     visable = db.Column(db.Boolean, default = True)
+    add_time = db.Column(db.String(22))
 
-    def __init__(self, message):
-        self.message = message
+    def __init__(self, content, add_time):
+        self.content = content
+        self.add_time = add_time

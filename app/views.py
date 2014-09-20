@@ -2,12 +2,13 @@
 # -*- coding:utf-8 -*-
 
 import os
+import time
 from functools import wraps
-from flask import render_template, request, g, redirect, url_for, flash
+from flask import render_template, request, g, redirect, url_for, flash, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from models import User, Problem, Notification
-from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm
+from models import User, Problem, Notification, Submit
+from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm, SubmitForm
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
                     CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, \
                     UPLOAD_SUCCESS, PAGENUMBER_ERROR, ADD_NOTIFICATION_SUCCESS
@@ -21,15 +22,29 @@ def admin_required(func):
             return PERMISSION_ERROR
     return check
 
-def redirect_url():
-    pass
+def pid_islegal(func):
+    @wraps(func)
+    def check(**args):
+        problem = Problem.query.filter_by(pid = args['pid']).first()
+        if not problem or not problem.visable:
+            return render_template('404.html')
+        else:
+            args['problem'] = problem
+            return func(**args)
+    return check
+
+def get_now_time():
+    return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+def delete_data(file_name):
+    os.system('/'.join(['rm problems', file_name]))
 
 @app.before_request
 def before_request():
     g.user = current_user
-    tmp = Notification.query.order_by('notification_mid DESC').all()
-    if tmp and tmp[0].visable:
-        g.message = tmp[0].message
+    tmp = Notification.query.order_by('notification_mid DESC').first()
+    if tmp and tmp.visable:
+        g.notification = tmp.content
 
 @lm.user_loader
 def load_user(userid):
@@ -37,12 +52,12 @@ def load_user(userid):
 
 @app.route('/')
 def home():
+    problem = Problem.query.filter_by(pid = 1001).first()
     return render_template('index.html')
 
 @app.route('/userinfo?userid=<userid>/')
-@login_required
 def userinfo(userid):
-    return render_template('index.html')
+    return render_template('userinfo.html')
 
 @app.route('/register/', methods = ['GET', 'POST'])
 def register():
@@ -50,7 +65,7 @@ def register():
     if request.method == 'GET':
         return render_template('register.html', form = form)
     else:
-        user = User(form.userid.data, form.nickName.data, form.password.data)
+        user = User(userid = form.userid.data, nickname = form.nickname.data, password = form.password.data)
         if not form.validate_userid():
             error = USERID_ERROR
         elif not form.validate_nickName():
@@ -111,14 +126,29 @@ def problemset(pn = 1):
         return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/showproblem/<int:pid>/')
-def show_problem(pid):
-    problem = Problem.query.filter_by(pid = pid).first()
+@pid_islegal
+def show_problem(pid, problem):
     return render_template('showproblem.html', problem = problem)
 
 @app.route('/submit/<int:pid>/', methods = ['GET', 'POST'])
+@pid_islegal
 @login_required
-def submit(pid):
-    return render_template('submit.html', pid = pid)
+def submit_problem(pid, problem):
+    form = SubmitForm(pid = pid)
+    if request.method == 'GET':
+        return render_template('submit.html', form = form)
+    else:
+        submit = Submit(runid = Submit.query.count() + 1, userid = current_user.userid, \
+                    pid = problem.pid, language = form.language.data, src = form.src.data, \
+                    submit_time = get_now_time())
+
+        db.session.add(submit)
+        db.session.commit()
+        return redirect('/status/')
+
+@app.route('/status/')
+def status():
+    return render_template('status.html')
 
 @app.route('/admin/')
 @admin_required
@@ -136,43 +166,64 @@ def admin_problemset(pn = 1):
         problem_list = Problem.query.order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
         return render_template('admin_problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
-@app.route('/admin/problemset/addproblem/', methods = ['GET', 'POST'])
+@app.route('/admin/addproblem/', methods = ['GET', 'POST'])
 @admin_required
 def admin_add_problem():
-    form = ProblemForm(request.form)
+    form = ProblemForm()
     if request.method == 'GET':
-        return render_template('admin_addproblem.html', form = form)
+        return render_template('admin_editproblem.html', form = form)
     else:
         inputfile = request.files['inputfile']
         outputfile = request.files['outputfile']
         problem_count = Problem.query.count()
         inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'in'])))
         outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'out'])))
-        problem = Problem(form.title.data, form.desc.data, form.pinput.data, \
-            form.poutput.data, form.sinput.data, form.soutput.data, form.hint.data, \
-            form.time_limit.data, form.memory_limit.data)
+        problem = Problem(title = form.title.data, desc = form.desc.data, pinput = form.pinput.data, \
+            poutput = form.poutput.data, sinput = form.sinput.data, soutput = form.soutput.data, \
+            hint = form.hint.data, time_limit = int(form.time_limit.data), memory_limit = int(form.memory_limit.data))
 
         db.session.add(problem)
         db.session.commit()
         flash(UPLOAD_SUCCESS)
         return redirect('/admin/problemset/')
 
-@app.route('/admin/editproblem/<int:pid>/')
+@app.route('/admin/editproblem/<int:pid>/', methods = ['GET', 'POST'])
 @admin_required
 def admin_edit_problem(pid):
-    return render_template('admin_editproblem.html')
+    form = ProblemForm()
+    if request.method == 'GET':
+        problem = Problem.query.filter_by(pid = pid).first()
+        form = ProblemForm(title = problem.title, desc = problem.desc, pinput = problem.pinput, \
+                poutput = problem.poutput, sinput = problem.sinput, soutput = problem.soutput, \
+                hint = problem.hint, time_limit = problem.time_limit, memory_limit = problem.memory_limit)
+
+        return render_template('admin_editproblem.html', form = form, pid = pid)
+    else:
+        delete_data('.'.join([str(pid + 1), 'in']))
+        delete_data('.'.join([str(pid + 1), 'out']))
+        inputfile = request.files['inputfile']
+        outputfile = request.files['outputfile']
+        inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(pid + 1), 'in'])))
+        outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(pid + 1), 'out'])))
+        Problem.query.filter_by(pid = pid).update({'title': form.title.data, 'desc': form.desc.data, \
+            'pinput': form.pinput.data, 'poutput': form.poutput.data, 'sinput': form.sinput.data, \
+            'soutput': form.soutput.data, 'hint': form.hint.data, 'time_limit': form.time_limit.data, \
+            'memory_limit': form.memory_limit.data})
+
+        db.session.commit()
+        return redirect('/admin/problemset/')
 
 @app.route('/admin/hideproblem/<int:pid>/')
 @admin_required
 def admin_hide_problem(pid):
-    Problem.query.filter_by(pid = pid).update({"visable" : False})
+    Problem.query.filter_by(pid = pid).update({"visable": False})
     db.session.commit()
     return redirect(request.referrer)
 
 @app.route('/admin/displayproblem/<int:pid>/')
 @admin_required
 def admin_display_problem(pid):
-    Problem.query.filter_by(pid = pid).update({"visable" : True})
+    Problem.query.filter_by(pid = pid).update({"visable": True})
     db.session.commit()
     return redirect(request.referrer)
 
@@ -181,12 +232,13 @@ def admin_display_problem(pid):
 def admin_notification():
     form = NotificationForm()
     if request.method == 'GET':
-        return render_template('admin_notification.html', form = form)
+        notification_list = Notification.query.order_by('notification_mid DESC').all()
+        return render_template('admin_notification.html', form = form, notification_list = notification_list)
     else:
         if not form.validate_on_submit():
             flash(INPUT_ERROR)
         else:
-            notification = Notification(form.message.data)
+            notification = Notification(content = form.content.data, add_time = get_now_time())
             db.session.add(notification)
             db.session.commit()
             flash(ADD_NOTIFICATION_SUCCESS)

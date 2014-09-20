@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <title> Submit Your Solution </title>
-<form method="POST" action="/submit/{{ pid }}">
+<form method="POST" action="/submit/{{ form.pid.data }}/">
+    <div class="center">
+        <h3 class="blue"> Submit Your Solution </h3>
+        Problem ID: {{ form.pid.data }} <br />
+        Language: {{ form.language }}<br />
+        Source Code<br />
+        {{ form.src(rows = 30, cols = 79)}}<br />
+        <input type="submit" value="Submit" > <input type="reset" value="Reset">
+    </div>
 </form>
 {% endblock %}

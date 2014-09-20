@@ -47,27 +47,27 @@
     font-size: 23px;
     color: red;
 }
-#problemset {
+#list {
     width: 89%;
     border-collapse: collapse;
     margin: 0 auto;
     font-size: 15px;
     text-align: center;
 }
-#problemset th {
+#list th {
     padding: 4px 7px 4px 7px;
     background-color: #1A5CC8;
     border: 1px solid white;
     color: white;
 }
 #ps_is_ac {
-    width: 50px;
+    width: 22px;
 }
 #ps_pid {
     width: 120px;
 }
 #ps_title {
-    width: 675px;
+    width: auto;
     text-align: left;
 }
 #ps_ac {
@@ -81,7 +81,7 @@
     margin: 0 auto;
     font-family: Arial, Helvetica, monospace;
 }
-#problem h2 {
+#problem h3 {
     color: blue;
 }
 #problem table {
@@ -164,6 +164,15 @@
 }
 .green {
     color: green;
+}
+.blue {
+    color: blue;
+}
+.center {
+    text-align: center;
+}
+.left {
+    text-align: left;
 }
 a {
     text-decoration: none;

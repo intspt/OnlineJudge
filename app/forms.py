@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from flask.ext.wtf import Form
-from wtforms import BooleanField, TextField, PasswordField, TextAreaField, HiddenField
+from wtforms import BooleanField, TextField, PasswordField, TextAreaField, HiddenField, SelectField
 from wtforms.validators import Length
 from re import match
 
@@ -15,7 +15,7 @@ class RegisterForm(Form):
     def validate_userid(self):
         return match(r'^[a-zA-Z0-9]{4,23}$', self.userid.data)
 
-    def validate_nickName(self):
+    def validate_nickname(self):
         return 5 < len(self.nickname.data) < 23
 
     def validate_password(self):
@@ -53,7 +53,9 @@ class ProblemForm(Form):
     memory_limit = TextField()
 
 class NotificationForm(Form):
-    message = TextField([Length(max = 80)])
+    content = TextField([Length(max = 80)])
 
 class SubmitForm(Form):
-    pass
+    pid = TextField()
+    language = SelectField(choices = [('C++', 'C++'), ('C', 'C'), ('Python2.7', 'Python2.7')])
+    src = TextAreaField()

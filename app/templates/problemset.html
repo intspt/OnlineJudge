@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <title> Problem Set</title>
-    <center>
+    <div class="center">
     {% for i in range(1, problem_count // 100 + 2) %}
         {% if pn == i %}
             {{ i }}
@@ -9,8 +9,8 @@
             <a href="/problemset/pn={{ i }}"> {{ i }} </a>
         {% endif %}
     {% endfor %}
-    </center>
-    <table id="problemset">
+    </div>
+    <table id="list">
         <tr>
             <th id="ps_is_ac"></th>
             <th id="ps_pid"> Problem ID </th>
@@ -21,8 +21,8 @@
         {% for problem in problem_list %}
             <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
                 <td></td>
-                <td> {{ problem.pid + 1000 }} </td>
-                <td align="left"><a href="{{ url_for('show_problem', pid = problem.pid) }}"> {{ problem.title }} </a></td>
+                <td> {{ problem.pid }} </td>
+                <td align="left"><a href={{ url_for('show_problem', pid = problem.pid) }}> {{ problem.title }} </a></td>
                 <td> {{ problem.ac_count }} </td>
                 <td> {{ problem.submit_count }} </td>
             </tr>

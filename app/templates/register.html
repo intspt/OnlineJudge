@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    <h2><center> Register Information </center></h2>
+    <h2 class="center"> Register Information </h2>
     {% with message = get_flashed_messages() %}
         {% if message %}
-            <center><h3 class="red">
-                {{ message[0] }}
-            </h3></center>
+            <h3 class="center red"> {{ message[0] }} </h3>
         {% endif %}
     {% endwith %}
     <form action="/register/" method="POST">

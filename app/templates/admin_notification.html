@@ -3,18 +3,33 @@
 <title> Notification </title>
 {% with message = get_flashed_messages() %}
     {% if message %}
-        <center><h3 class="red">
+        <h3 class="center red">
             {{ message[0] }}
-        </h3></center>
+        </h3>
     {% endif %}
 {% endwith %}
 <form action='/admin/notification/' method="POST">
     {{ form.csrf_token }}
-    <table>
+    <h3 class="center"> Add Notification </h3>
+    <table style="margin: 0 auto">
         <tr>
-            <td style="color:red; font-weight:bold"> Add Notification </td>
-            <td> {{ form.message(size=94) }} </td>
+            <td> {{ form.content(size=94) }} </td>
             <td><input value="Submit" type="submit"></td></tr>
     </table>
 </form>
+<h3 class="center"> History Notification </h3>
+<table id="list">
+    <tr>
+        <th style="width:100px"> Notification ID </th>
+        <th> Content </th>
+        <th style="width:147px"> Add Time </th>
+    </tr>
+    {% for notification in notification_list %}
+        <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
+            <td> {{ notification.pid }} </td>
+            <td class="left"> {{ notification.content }} </td>
+            <td> {{ notification.add_time }} </td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}

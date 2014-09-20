@@ -26,15 +26,15 @@
             <table id="navBar"><tr>
                 <td><a href="/"> Home </a></td>
                 <td><a href="/problemset/"> Problemset </a></td>
-                <td><a href="/"> Status </a></td>
+                <td><a href="/status/"> Status </a></td>
                 <td><a href="/"> Ranklist </a></td>
                 <td><a href="/"> Contest </a></td>
                 <td><a href="/"> F.A.Qs </a></td>
             </table></tr>
         </div>
         <div id="notification">
-            {% if g.message %}
-                {{ g.message }}
+            {% if g.notification %}
+                {{ g.notification }}
             {% endif %}
         </div>
         {% block content %}
