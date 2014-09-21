@@ -23,6 +23,9 @@ PAGENUMBER_ERROR = 'Illegal page number!'
 UPLOAD_SUCCESS = 'Uploaded successfully'
 ADD_NOTIFICATION_SUCCESS = 'Notification has been added!'
 
+MAX_PROBLEM_NUM_ONE_PAGE = 100
+MAX_SUBMIT_NUM_ONE_PAGE = 20
+
 ADMIN_USERID = 'rikka'
 ADMIN_NICKNAME = 'rikka'
 ADMIN_PASSWORD = '110018'

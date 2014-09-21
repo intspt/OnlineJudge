@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <title> Problem Status List </title>
-<h4 class="center blue">Problem Status List</h4>
+<h4 class="center blue"> Problem Status List </h4>
 <table id="list">
     <tr>
         <th> RunID</th>
@@ -28,16 +28,21 @@
             {% endif %}
             <td class={{ status }}> {{ submit.result }}</td>
             {% if submit.result == 'Accepted' %}
-                <td> {{ submit.memory_used }} </td>
-                <td> {{ submit.time_used }} </td>
+                <td> {{ submit.memory_used }}K </td>
+                <td> {{ submit.time_used }}MS </td>
             {% else %}
                 <td></td>
                 <td></td>
             {% endif %}
-            <td> {{ submit.language }} </td>
+            <td><a href={{ url_for('viewcode', runid = submit.runid )}}> {{ submit.language }} </a></td>
             <td> {{ submit.length }} </td>
             <td> {{ submit.submit_time }} </td>
         </tr>
     {% endfor %}
 </table>
+<div class="center">
+    [<a href="/status/"> First Page </a>]
+    [<a href={{ url_for('status', last = submit_list[0].runid + 1) }}> Previous Page </a>]
+    [<a href={{ url_for('status', first = submit_list[-1].runid - 1) }}> Next Page </a>]
+</div>
 {% endblock %}

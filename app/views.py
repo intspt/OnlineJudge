@@ -11,7 +11,8 @@ from models import User, Problem, Notification, Submit
 from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm, SubmitForm
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
                     CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, \
-                    UPLOAD_SUCCESS, PAGENUMBER_ERROR, ADD_NOTIFICATION_SUCCESS
+                    UPLOAD_SUCCESS, PAGENUMBER_ERROR, ADD_NOTIFICATION_SUCCESS, \
+                    MAX_PROBLEM_NUM_ONE_PAGE, MAX_SUBMIT_NUM_ONE_PAGE
 
 def admin_required(func):
     @wraps(func)
@@ -118,10 +119,10 @@ def logout():
 @app.route('/problemset/<int:pn>/')
 def problemset(pn = 1):
     problem_count = db.session.query(Problem).count()
-    if (pn - 1) * 100 > problem_count:
+    if (pn - 1) * MAX_PROBLEM_NUM_ONE_PAGE > problem_count:
         return PAGENUMBER_ERROR
     else:
-        problem_list = db.session.query(Problem).filter_by(visable = True).order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
+        problem_list = db.session.query(Problem).filter_by(visable = True).order_by('problem_pid').slice((pn - 1) * MAX_PROBLEM_NUM_ONE_PAGE, min(problem_count, pn * MAX_PROBLEM_NUM_ONE_PAGE))
         return render_template('problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/showproblem/<int:pid>/')
@@ -149,13 +150,26 @@ def submit_problem(pid, problem):
 @app.route('/status/first/<int:first>/')
 @app.route('/status/last/<int:last>/')
 def status(first = None, last = None):
-    submit_list = db.session.query(Submit).order_by('submit_runid DESC').all()
+    submit_list = db.session.query(Submit).order_by('submit_runid').all()
+    submit_count = db.session.query(Submit).count()
     if first:
-        pass
+        if first < 0 or first > submit_count:
+            abort(404)
+
+        s, t = first - submit_count - 1, max(-(submit_count + 1), first - MAX_SUBMIT_NUM_ONE_PAGE - submit_count + 1)
     elif last:
-        pass
+        if last < 0 or last > submit_count:
+            abort(404)
+
+        s, t = min(-1, last + MAX_SUBMIT_NUM_ONE_PAGE - submit_count - 2), max(-(submit_count + 1), last - submit_count - 2)
     else:
-        return render_template('status.html', submit_list = submit_list)
+        s, t = -1, -min(submit_count, MAX_SUBMIT_NUM_ONE_PAGE) - 1
+
+    return render_template('status.html',  submit_list = submit_list[s: t: -1])
+
+@app.route('/viewcode/<int:runid>')
+def viewcode(runid):
+    return render_template('viewcode.html', submit = db.session.query(Submit).filter_by(runid = runid).first())
 
 @app.route('/admin/')
 @admin_required
@@ -167,10 +181,10 @@ def admin():
 @admin_required
 def admin_problemset(pn = 1):
     problem_count = db.session.query(Problem).count()
-    if (pn - 1) * 100 > problem_count:
+    if (pn - 1) * MAX_PROBLEM_NUM_ONE_PAGE > problem_count:
         return PAGENUMBER_ERROR
     else:
-        problem_list = db.session.query(Problem).order_by('problem_pid').slice((pn - 1) * 100, min(problem_count, pn * 100))
+        problem_list = db.session.query(Problem).order_by('problem_pid').slice((pn - 1) * MAX_PROBLEM_NUM_ONE_PAGE, min(problem_count, pn * MAX_PROBLEM_NUM_ONE_PAGE))
         return render_template('admin_problemset.html', pn = pn, problem_count = problem_count, problem_list = problem_list)
 
 @app.route('/admin/addproblem/', methods = ['GET', 'POST'])

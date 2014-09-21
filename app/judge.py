@@ -6,7 +6,7 @@ from models import Submit
 
 def put_task_into_queue(que):
     db.session.commit()
-    submit_list = db.session.query(Submit).filter_by(result = 'Pending').order_by('submit_runid DESC').all()
+    submit_list = db.session.query(Submit).filter_by(result = 'Pending').order_by('submit_runid').all()
     for submit in submit_list:
         task = {
             'runid': submit.runid,
@@ -22,4 +22,5 @@ def work(que):
         # result = judge()
         result = 'Accepted'
         db.session.query(Submit).filter_by(runid = runid).update({'result': result})
+        db.session.commit()
         que.task_done()

@@ -162,6 +162,10 @@
 #submitlist {
     width: 1000px;
 }
+#submitinfo {
+    margin: 0 auto; 
+    font-size: 16px; 
+}
 .red {
     color: red;
 }
