@@ -48,7 +48,7 @@
     color: red;
 }
 #list {
-    width: 89%;
+    width: 1000px;
     border-collapse: collapse;
     margin: 0 auto;
     font-size: 15px;
@@ -158,6 +158,9 @@
 #hint {
     width: 99%;
     height: 99px;
+}
+#submitlist {
+    width: 1000px;
 }
 .red {
     color: red;

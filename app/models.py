@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 from app import db
-from config import PING
 
 class User(db.Model):
     userid = db.Column(db.String(22), primary_key = True)
@@ -58,11 +57,12 @@ class Submit(db.Model):
     runid = db.Column(db.Integer, primary_key = True)
     userid = db.Column(db.String(22))
     pid = db.Column(db.Integer)
-    result = db.Column(db.String(22), default = PING)
+    result = db.Column(db.String(22), default = 'Pending')
     memory_used = db.Column(db.Integer, default = None)
     time_used = db.Column(db.Integer, default = None)
     language = db.Column(db.String(9))
     src = db.Column(db.Text)
+    length = db.Column(db.Integer)
     submit_time = db.Column(db.String(19))
 
     def __init__(self, runid, userid, pid, language, src, submit_time):
@@ -71,6 +71,7 @@ class Submit(db.Model):
         self.pid = pid
         self.language = language
         self.src = src
+        self.length = len(src)
         self.submit_time = submit_time
 
 class Notification(db.Model):
