@@ -4,8 +4,10 @@
 import os
 import time
 from functools import wraps
+
 from flask import render_template, request, g, redirect, url_for, flash, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
+
 from app import app, db, lm
 from models import User, Problem, Notification, Submit
 from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm, SubmitForm
@@ -155,17 +157,19 @@ def status(first = None, last = None):
     if first:
         if first < 0 or first > submit_count:
             abort(404)
-
         s, t = first - submit_count - 1, max(-(submit_count + 1), first - MAX_SUBMIT_NUM_ONE_PAGE - submit_count + 1)
     elif last:
         if last < 0 or last > submit_count:
             abort(404)
-
         s, t = min(-1, last + MAX_SUBMIT_NUM_ONE_PAGE - submit_count - 2), max(-(submit_count + 1), last - submit_count - 2)
     else:
         s, t = -1, -min(submit_count, MAX_SUBMIT_NUM_ONE_PAGE) - 1
 
-    return render_template('status.html',  submit_list = submit_list[s: t: -1])
+    return render_template('status.html', submit_list = submit_list[s: t: -1], first_page = True)
+
+@app.route('/showcompileinfo/<int:runid>/')
+def show_compileinfo(runid):
+    return render_template('ce_error.html', ce_error = db.session.query(Submit).filter_by(runid = runid).first().ce_error)
 
 @app.route('/viewcode/<int:runid>')
 def viewcode(runid):
@@ -197,8 +201,8 @@ def admin_add_problem():
         inputfile = request.files['inputfile']
         outputfile = request.files['outputfile']
         problem_count = db.session.query(Problem).count()
-        inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'in'])))
-        outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(problem_count + 1), 'out'])))
+        inputfile.save(os.path.join(app.config['DATA_FOLDER'], '.'.join([str(problem_count + 1001), 'in'])))
+        outputfile.save(os.path.join(app.config['DATA_FOLDER'], '.'.join([str(problem_count + 1001), 'out'])))
         problem = Problem(title = form.title.data, desc = form.desc.data, pinput = form.pinput.data, \
             poutput = form.poutput.data, sinput = form.sinput.data, soutput = form.soutput.data, \
             hint = form.hint.data, time_limit = int(form.time_limit.data), memory_limit = int(form.memory_limit.data))
@@ -224,8 +228,8 @@ def admin_edit_problem(pid):
         delete_data('.'.join([str(pid + 1), 'out']))
         inputfile = request.files['inputfile']
         outputfile = request.files['outputfile']
-        inputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(pid + 1), 'in'])))
-        outputfile.save(os.path.join(app.config['UPLOAD_FOLDER'], '.'.join([str(pid + 1), 'out'])))
+        inputfile.save(os.path.join(app.config['DATA_FOLDER'], '.'.join([str(pid + 1), 'in'])))
+        outputfile.save(os.path.join(app.config['DATA_FOLDER'], '.'.join([str(pid + 1), 'out'])))
         db.session.query(Problem).filter_by(pid = pid).update({'title': form.title.data, 'desc': form.desc.data, \
             'pinput': form.pinput.data, 'poutput': form.poutput.data, 'sinput': form.sinput.data, \
             'soutput': form.soutput.data, 'hint': form.hint.data, 'time_limit': form.time_limit.data, \

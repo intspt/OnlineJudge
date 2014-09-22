@@ -64,6 +64,7 @@ class Submit(db.Model):
     src = db.Column(db.Text)
     length = db.Column(db.Integer)
     submit_time = db.Column(db.String(19))
+    ce_error = db.Column(db.Text, default = None)
 
     def __init__(self, runid, userid, pid, language, src, submit_time):
         self.runid = runid

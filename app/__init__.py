@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 
+import os
+
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager

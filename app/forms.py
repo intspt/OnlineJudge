@@ -1,10 +1,11 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 
+from re import match
+
 from flask.ext.wtf import Form
 from wtforms import BooleanField, TextField, PasswordField, TextAreaField, HiddenField, SelectField
 from wtforms.validators import Length
-from re import match
 
 class RegisterForm(Form):
     userid = TextField()

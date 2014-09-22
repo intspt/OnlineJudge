@@ -4,7 +4,10 @@
 import os
 
 SQLALCHEMY_DATABASE_URI = 'mysql://spt:constintspt@localhost:3306/oj'
-UPLOAD_FOLDER = 'app/problems'
+MAIN_FOLDER = os.getcwd()
+DATA_FOLDER = os.path.join(MAIN_FOLDER, 'app/data')
+TMP_FOLDER = os.path.join(MAIN_FOLDER, 'app/tmp')
+WAIT_TIME = 0.5
 
 DEBUG = True
 CSRF_ENABLED = True
@@ -29,3 +32,18 @@ MAX_SUBMIT_NUM_ONE_PAGE = 20
 ADMIN_USERID = 'rikka'
 ADMIN_NICKNAME = 'rikka'
 ADMIN_PASSWORD = '110018'
+
+PYTHON_TIME_LIMIT_TIMES = 10
+PYTHON_MEMORY_LIMIT_TIMES = 10
+
+JUDGE_RESULT = {
+    0: 'Accepted',
+    1: 'Presentation Error',
+    2: 'Time Limit Exceeded',
+    3: 'Memory Limit Exceeded',
+    4: 'Wrong Answer',
+    5: 'Runtime Error',
+    6: 'Output Limit Exceeded',
+    7: 'Compile Error',
+    8: 'System Error'
+}

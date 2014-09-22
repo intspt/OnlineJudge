@@ -26,7 +26,13 @@
             {% else %}
                 {% set status = "red" %}
             {% endif %}
-            <td class={{ status }}> {{ submit.result }}</td>
+            <td class={{ status }}>
+                {% if submit.result == 'Compile Error' %}
+                    <a style="color:green" href={{ url_for('show_compileinfo', runid = submit.runid) }}> {{ submit.result }} </a>
+                {% else %}
+                    {{ submit.result }}
+                {% endif %}
+            </td>
             {% if submit.result == 'Accepted' %}
                 <td> {{ submit.memory_used }}K </td>
                 <td> {{ submit.time_used }}MS </td>
@@ -42,7 +48,11 @@
 </table>
 <div class="center">
     [<a href="/status/"> First Page </a>]
-    [<a href={{ url_for('status', last = submit_list[0].runid + 1) }}> Previous Page </a>]
-    [<a href={{ url_for('status', first = submit_list[-1].runid - 1) }}> Next Page </a>]
+    {% if submit_list %}
+        {% if not first_page %}
+            [<a href={{ url_for('status', last = submit_list[0].runid + 1) }}> Previous Page </a>]
+        {% endif %}
+        [<a href={{ url_for('status', first = submit_list[-1].runid - 1) }}> Next Page </a>]
+    {% endif %}
 </div>
 {% endblock %}
