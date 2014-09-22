@@ -8,7 +8,7 @@ import shlex
 import lorun
 
 from app import db
-from models import Problem, Submit
+from models import Problem, Submit, User
 from config import DATA_FOLDER, TMP_FOLDER, JUDGE_RESULT, PYTHON_TIME_LIMIT_TIMES, PYTHON_MEMORY_LIMIT_TIMES
 
 def put_task_into_queue(que):
@@ -20,6 +20,7 @@ def put_task_into_queue(que):
             'runid': submit.runid,
             'pid': submit.pid,
             'language': submit.language,
+            'userid': submit.userid
         }
         que.put(task)
 
@@ -29,21 +30,35 @@ def work(que):
         task = que.get()
         runid = task['runid']
         pid = task['pid']
+        userid = task['userid']
         language = task['language']
         result, rst = judge(runid, pid, language)
+        problem = db.session.query(Problem).filter_by(pid = pid).first()
+        user = db.session.query(User).filter_by(userid = userid).first()
         if result == 'Accepted':
+            if not db.session.query(Submit).filter_by(pid = pid, userid = userid, result = 'Accepted').all():
+                user.ac_count += 1
             db.session.query(Submit).filter_by(runid = runid).update({'result': result, \
                 'time_used': rst['timeused'], 'memory_used': rst['memoryused']})
-
+            problem.ac_count += 1
         else:
             db.session.query(Submit).filter_by(runid = runid).update({'result': result})
+
+        problem.submit_count += 1
+        user.submit_count += 1
         db.session.commit()
         que.task_done()
+        rm_tmp_file(runid)
 
 def get_code(runid, file_name):
+    '''获取对应runid的源代码'''
     fout = open(os.path.join(TMP_FOLDER, file_name), 'w')
     fout.write(db.session.query(Submit).filter_by(runid = runid).first().src)
     fout.close()
+
+def rm_tmp_file(runid):
+    '''删除产生的临时文件'''
+    os.system(' '.join(['rm', os.path.join(TMP_FOLDER, str(runid))]))
 
 def compile(runid, language):
     '''将程序编译成可执行文件'''
@@ -64,6 +79,7 @@ def compile(runid, language):
         return False
 
 def judge(runid, pid, language):
+    '''评测题目'''
     file_name = {
         'C': 'main.c',
         'C++': 'main.cpp',

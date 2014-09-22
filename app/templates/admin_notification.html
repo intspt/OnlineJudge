@@ -10,14 +10,15 @@
 {% endwith %}
 <form action='/admin/notification/' method="POST">
     {{ form.csrf_token }}
-    <h3 class="center"> Add Notification </h3>
+    <div class="center"> Add Notification </div>
     <table style="margin: 0 auto">
         <tr>
             <td> {{ form.content(size=94) }} </td>
             <td><input value="Submit" type="submit"></td></tr>
     </table>
 </form>
-<h3 class="center"> History Notification </h3>
+<br />
+<div class="center"> History Notification </div>
 <table id="list">
     <tr>
         <th style="width:100px"> Notification ID </th>

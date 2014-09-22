@@ -17,17 +17,19 @@
             <h2 class="center"> Source Code </h2>
             <table id="submitinfo">
                 <tr>
-                    <td> Problem: <a href={{ url_for('show_problem', pid = submit.pid)}}> {{ submit.pid }} </a></td>
+                    <td width="147px"> Problem: <a href={{ url_for('show_problem', pid = submit.pid)}}> {{ submit.pid }} </a></td>
                     <td width="10px"></td>
                     <td> User: <a href={{ url_for('userinfo', userid = submit.userid)}}> {{ submit.userid }}</a></td>
                 </tr>
+                {% if submit.result == 'Accepted' %}
+                    <tr>
+                        <td width="147px"> Memory: {{ submit.memory_used }}K </td>
+                        <td width="10px"></td>
+                        <td> Time: {{ submit.time_used }}MS </td>
+                    </tr>
+                {% endif %}
                 <tr>
-                    <td> Memory: {{ submit.memory_used }}K </td>
-                    <td width="10px"></td>
-                    <td> Time: {{ submit.time_used }}MS </td>
-                </tr>
-                <tr>
-                    <td> Language: {{ submit.language }} </td>
+                    <td width="147px"> Language: {{ submit.language }} </td>
                     <td width="10px"></td>
                     <td> Result: {{ submit.result }} </td>
                 </tr>

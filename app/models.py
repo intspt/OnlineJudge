@@ -4,10 +4,13 @@
 from app import db
 
 class User(db.Model):
+    '''用户'''
     userid = db.Column(db.String(22), primary_key = True)
     nickname = db.Column(db.Text)
     password = db.Column(db.Text)
     is_admin = db.Column(db.Boolean)
+    ac_count = db.Column(db.Integer, default = 0)
+    submit_count = db.Column(db.Integer, default = 0)
 
     def __init__(self, userid, nickname, password, is_admin = False):
         self.userid = userid
@@ -28,6 +31,7 @@ class User(db.Model):
         return self.userid
 
 class Problem(db.Model):
+    '''题目'''
     pid = db.Column(db.Integer, primary_key = True, default = None)
     title = db.Column(db.Text)
     desc = db.Column(db.Text)
@@ -54,6 +58,7 @@ class Problem(db.Model):
         self.memory_limit = memory_limit
 
 class Submit(db.Model):
+    '''提交信息'''
     runid = db.Column(db.Integer, primary_key = True)
     userid = db.Column(db.String(22))
     pid = db.Column(db.Integer)
@@ -76,6 +81,7 @@ class Submit(db.Model):
         self.submit_time = submit_time
 
 class Notification(db.Model):
+    '''通知信息'''
     mid = db.Column(db.Integer, primary_key = True, default = None)
     content = db.Column(db.Text)
     visable = db.Column(db.Boolean, default = True)

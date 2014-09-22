@@ -18,7 +18,7 @@
         <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
             <td> {{ submit.runid }} </td>
             <td> {{ submit.userid }} </td>
-            <td> {{ submit.pid }} </td>
+            <td><a href={{ url_for('show_problem', pid =submit.pid) }}> {{ submit.pid }} </a></td>
             {% if submit.result == 'Accepted' %}
                 {% set status = "blue" %}
             {% elif submit.result == 'Pending' or submit.result == 'Compile Error' or submit.result == 'Runing' %}

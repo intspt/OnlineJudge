@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<title> F.A.Qs </title>
+<div id="wrapper2">
+    <h2 class="center"> Online Judge FAQ </h2>
+    <ul>
+        <li> Compiler options</li>
+        <table border="1" style="font-family: Arial, Helvetica, monospace;">
+            <tr>
+                <td> C: </td>
+                <td class="blue"> gcc main.c -o main -Wall -lm -O2 -std=c99 --static -DONLINE_JUDGE </td>
+            </tr>
+            <tr>
+                <td> C++: </td>
+                <td class="blue">g++ main.cpp -o main -O2 -Wall -lm --static -DONLINE_JUDGE </td>
+            </tr>
+            <tr>
+                <td> Python2.7: </td>
+                <td class="blue"> python2.7 -m py_compile main.py </td>
+            </tr>
+        </table>
+    </ul>
+</div>
+{% endblock %}

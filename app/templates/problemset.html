@@ -1,31 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
-    <title> Problem Set</title>
-    <div class="center">
-    {% for i in range(1, problem_count // 100 + 2) %}
-        {% if pn == i %}
-            {{ i }}
-        {% else %}
-            <a href="/problemset/pn={{ i }}"> {{ i }} </a>
-        {% endif %}
-    {% endfor %}
-    </div>
-    <table id="list">
+<title> Problem Set</title>
+<div class="center">
+{% for i in range(1, problem_count // 100 + 2) %}
+    {% if pn == i %}
+        {{ i }}
+    {% else %}
+        <a href="/problemset/pn={{ i }}"> {{ i }} </a>
+    {% endif %}
+{% endfor %}
+</div>
+<form action="/searchproblem/" method="POST">
+    {{ form.csrf_token }}
+    <table class="center">
         <tr>
-            <th id="ps_is_ac"></th>
-            <th id="ps_pid"> Problem ID </th>
-            <th id="ps_title"> Title </th>
-            <th id="ps_ac"> AC </th>
-            <th id="ps_submit"> Submit </th>
+            <td> Problem ID : </td>
+            <td> {{ form.pid(size=7) }} </td>
+            <td><button type="submit"> Go </button></td>
         </tr>
-        {% for problem in problem_list %}
-            <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
-                <td></td>
-                <td> {{ problem.pid }} </td>
-                <td align="left"><a href={{ url_for('show_problem', pid = problem.pid) }}> {{ problem.title }} </a></td>
-                <td> {{ problem.ac_count }} </td>
-                <td> {{ problem.submit_count }} </td>
-            </tr>
-        {% endfor %}
     </table>
+</form>
+<table id="list">
+    <tr>
+        <th id="ps_is_ac"></th>
+        <th id="ps_pid"> Problem ID </th>
+        <th id="ps_title"> Title </th>
+        <th id="ps_ac"> AC </th>
+        <th id="ps_submit"> Submit </th>
+    </tr>
+    {% for problem in problem_list %}
+        <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
+            <td></td>
+            <td> {{ problem.pid }} </td>
+            <td align="left"><a href={{ url_for('show_problem', pid = problem.pid) }}> {{ problem.title }} </a></td>
+            <td> {{ problem.ac_count }} </td>
+            <td> {{ problem.submit_count }} </td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
