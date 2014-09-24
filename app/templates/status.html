@@ -2,6 +2,19 @@
 {% block content %}
 <title> Problem Status List </title>
 <h4 class="center blue"> Problem Status List </h4>
+<div style="width:1111px" class="center">
+    <form action="/status" method="GET">
+        <table>
+            <tr>
+                <td> Problem: {{ form.pid(size=8) }} </td>
+                <td> User ID: {{ form.userid(size=15) }} </td>
+                <td> Result: {{ form.result }} </td>
+                <td> Language: {{ form.language }} </td>
+                <td><button type="submit"> Go </button></td>
+            </tr>
+        </table>
+    </form>
+</div>
 <table id="list">
     <tr>
         <th> RunID</th>
@@ -18,18 +31,18 @@
         <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
             <td> {{ submit.runid }} </td>
             <td> {{ submit.userid }} </td>
-            <td><a href={{ url_for('show_problem', pid =submit.pid) }}> {{ submit.pid }} </a></td>
+            <td><a href={{ url_for('show_problem', pid = submit.pid) }}> {{ submit.pid }} </a></td>
             {% if submit.result == 'Accepted' %}
                 {% set status = "blue" %}
             {% elif submit.result == 'Pending' or submit.result == 'Compile Error' or submit.result == 'Runing' %}
-                {% set status = "green" %}
+                {% set status = "green"%}
             {% else %}
                 {% set status = "red" %}
             {% endif %}
             <td class={{ status }}>
                 {% if submit.result == 'Compile Error' %}
-                    <a style="color:green" href={{ url_for('show_compileinfo', runid = submit.runid) }}> {{ submit.result }} </a>
-                {% else %}
+                    <a style="color:green" target="_blank" href={{ url_for('show_compileinfo', runid = submit.runid) }}> {{ submit.result }} </a>
+                {% else %} 
                     {{ submit.result }}
                 {% endif %}
             </td>
@@ -40,19 +53,17 @@
                 <td></td>
                 <td></td>
             {% endif %}
-            <td><a href={{ url_for('viewcode', runid = submit.runid )}}> {{ submit.language }} </a></td>
+            <td><a href={{ url_for('viewcode', runid = submit.runid )}} target="_blank"> {{ submit.language }} </a></td>
             <td> {{ submit.length }} </td>
             <td> {{ submit.submit_time }} </td>
         </tr>
     {% endfor %}
-</table>
+</table> 
 <div class="center">
-    [<a href="/status/"> First Page </a>]
+    [<a href={{ url_for('status', pid = pid, userid = userid, result = result, language = language) }}> TOP </a>]
     {% if submit_list %}
-        {% if not first_page %}
-            [<a href={{ url_for('status', last = submit_list[0].runid + 1) }}> Previous Page </a>]
-        {% endif %}
-        [<a href={{ url_for('status', first = submit_list[-1].runid - 1) }}> Next Page </a>]
+        [<a href={{ url_for('status', bottom = submit_list[0].runid, pid = pid, userid = userid, result = result, language = language) }}> Previous Page </a>]
+        [<a href={{ url_for('status', top = submit_list[-1].runid, pid = pid, userid = userid, result = result, language = language) }}> Next Page </a>]
     {% endif %}
 </div>
 {% endblock %}

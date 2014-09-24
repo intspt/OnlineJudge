@@ -2,20 +2,18 @@
 {% block content %}
 <title> Problem Set</title>
 <div class="center">
-{% for i in range(1, problem_count // 100 + 2) %}
+{% for i in problem_list.iter_pages() %}
     {% if pn == i %}
-        {{ i }}
+        <span class="red"> {{ i }} </span>
     {% else %}
-        <a href="/problemset/pn={{ i }}"> {{ i }} </a>
+        <a href={{ url_for('problemset', pn = i) }}> {{ i }} </a>
     {% endif %}
 {% endfor %}
 </div>
-<form action="/searchproblem/" method="POST">
-    {{ form.csrf_token }}
+<form action="/problemset" method="GET">
     <table class="center">
         <tr>
-            <td> Problem ID : </td>
-            <td> {{ form.pid(size=7) }} </td>
+            <td> Problem ID : {{ form.pid(size=7) }} </td>
             <td><button type="submit"> Go </button></td>
         </tr>
     </table>
@@ -28,7 +26,7 @@
         <th id="ps_ac"> AC </th>
         <th id="ps_submit"> Submit </th>
     </tr>
-    {% for problem in problem_list %}
+    {% for problem in problem_list.items %}
         <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
             <td></td>
             <td> {{ problem.pid }} </td>

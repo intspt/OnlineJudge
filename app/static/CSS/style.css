@@ -1,12 +1,12 @@
 #wrapper {
     position: relative;
-    width: 1111px;
+    width: 1222px;
     min-height: 100%;
     margin: 0 auto;
 }
 #wrapper2 {
     position: relative;
-    width: 1000px;
+    width: 1111px;
     top: 20px;
     margin: 0 auto;
 }
@@ -19,7 +19,7 @@
 }
 #navBar {
     color: white;
-    width: 1000px;
+    width: 1111px;
     background-color: #1A5CC8;
     margin: 0 auto;
     border-collapse: collapse;
@@ -29,7 +29,6 @@
     font-size: 22px;
     font-weight: bold;
     width: 133px;
-    overflow: scroll;
     border: 1px solid white;
     padding: 4px 7px 4px 7px;
 }
@@ -48,10 +47,10 @@
     color: red;
 }
 #list {
-    width: 1000px;
+    width: 1111px;
     border-collapse: collapse;
     margin: 0 auto;
-    font-size: 15px;
+    font-size: 16px;
     text-align: center;
 }
 #list th {

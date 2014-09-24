@@ -13,22 +13,23 @@
         <div id="profile">
             {% if g.user.is_authenticated() %}
                 <a href={{ url_for('userinfo', userid = g.user.userid) }}> {{ g.user.userid }} </a>
-                <a href="/logout/"> Logout </a>
+                <a href="/logout"> Logout </a>
                 {% if g.user.is_admin %}
-                    <a href='/admin/' id="admin"> Admin </a>
+                    <a href='/admin' id="admin"> Admin </a>
                 {% endif %}
             {% else %}
-                <a href="/login/"> Login </a>
-                <a href="/register/"> Register </a>
+                <a href="/login"> Login </a>
+                <a href="/register"> Register </a>
             {% endif %}
         </div>
         <div>
             <table id="navBar"><tr>
                 <td><a href="/"> Home </a></td>
-                <td><a href="/problemset/"> Problemset </a></td>
-                <td><a href="/status/"> Status </a></td>
-                <td><a href="/ranklist/"> Ranklist </a></td>
-                <td><a href="/faqs/"> F.A.Qs </a></td>
+                <td><a href="/discuss"> Web Board </a></td>
+                <td><a href="/problemset"> Problemset </a></td>
+                <td><a href="/status"> Status </a></td>
+                <td><a href="/ranklist"> Ranklist </a></td>
+                <td><a href="/faqs"> F.A.Qs </a></td>
             </table></tr>
         </div>
         <div id="notification">

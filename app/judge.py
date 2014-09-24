@@ -14,7 +14,7 @@ from config import DATA_FOLDER, TMP_FOLDER, JUDGE_RESULT, PYTHON_TIME_LIMIT_TIME
 def put_task_into_queue(que):
     '''循环扫描数据库,将任务添加到队列'''
     db.session.commit()
-    submit_list = db.session.query(Submit).filter_by(result = 'Pending').order_by('submit_runid').all()
+    submit_list = Submit.query.filter_by(result = 'Pending').order_by('submit_runid').all()
     for submit in submit_list:
         task = {
             'runid': submit.runid,
@@ -33,16 +33,16 @@ def work(que):
         userid = task['userid']
         language = task['language']
         result, rst = judge(runid, pid, language)
-        problem = db.session.query(Problem).filter_by(pid = pid).first()
-        user = db.session.query(User).filter_by(userid = userid).first()
+        problem = Problem.query.filter_by(pid = pid).first()
+        user = User.query.filter_by(userid = userid).first()
         if result == 'Accepted':
-            if not db.session.query(Submit).filter_by(pid = pid, userid = userid, result = 'Accepted').all():
+            if not Submit.query.filter_by(pid = pid, userid = userid, result = 'Accepted').all():
                 user.ac_count += 1
-            db.session.query(Submit).filter_by(runid = runid).update({'result': result, \
+            Submit.query.filter_by(runid = runid).update({'result': result, \
                 'time_used': rst['timeused'], 'memory_used': rst['memoryused']})
             problem.ac_count += 1
         else:
-            db.session.query(Submit).filter_by(runid = runid).update({'result': result})
+            Submit.query.filter_by(runid = runid).update({'result': result})
 
         problem.submit_count += 1
         user.submit_count += 1
@@ -53,7 +53,7 @@ def work(que):
 def get_code(runid, file_name):
     '''获取对应runid的源代码'''
     fout = open(os.path.join(TMP_FOLDER, file_name), 'w')
-    fout.write(db.session.query(Submit).filter_by(runid = runid).first().src)
+    fout.write(Submit.query.filter_by(runid = runid).first().src)
     fout.close()
 
 def rm_tmp_file(runid):
@@ -74,7 +74,7 @@ def compile(runid, language):
     if p.returncode == 0:
         return True
     else:
-        db.session.query(Submit).filter_by(runid = runid).update({'ce_error': ''.join([out, error])})
+        Submit.query.filter_by(runid = runid).update({'ce_error': ''.join([out, error])})
         db.session.commit()
         return False
 
@@ -89,8 +89,8 @@ def judge(runid, pid, language):
     input_file = file(os.path.join(DATA_FOLDER, ''.join([str(pid), '.in'])))
     output_file = file(os.path.join(DATA_FOLDER, ''.join([str(pid), '.out'])))
     tmp_file = file(os.path.join(TMP_FOLDER, str(runid)), 'w')
-    time_limit = db.session.query(Problem).filter_by(pid = pid).first().time_limit
-    memory_limit = db.session.query(Problem).filter_by(pid = pid).first().memory_limit
+    time_limit = Problem.query.filter_by(pid = pid).first().time_limit
+    memory_limit = Problem.query.filter_by(pid = pid).first().memory_limit
 
     if not compile(runid, language):
         return 'Compile Error', None

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <title> Submit Your Solution </title>
-<form method="POST" action="/submit/{{ form.pid.data }}/">
+<form method="POST" action="/submit">
     <div class="center">
         <h3 class="blue"> Submit Your Solution </h3>
         Problem ID: {{ form.pid.data }} <br />

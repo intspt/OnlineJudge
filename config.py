@@ -13,8 +13,6 @@ TMP_FOLDER = os.path.join(MAIN_FOLDER, 'app/tmp')
 '''扫描数据库并将Pending状态的提交加入队列的间隔时间'''
 WAIT_TIME = 0.5
 
-DEBUG = True
-CSRF_ENABLED = True
 SECRET_KEY = 'dark flame master'
 
 USERID_ERROR = 'User ID can only contain NUMBERs & LETTERs and length must be 3 to 22!'
@@ -35,7 +33,7 @@ MAX_PROBLEM_NUM_ONE_PAGE = 100
 '''每页展示提交记录的最大数量'''
 MAX_SUBMIT_NUM_ONE_PAGE = 20
 '''每页展示用户的最大数量'''
-USER_NUM_ONE_PAGE = 50
+MAX_USER_NUM_ONE_PAGE = 50
 
 '''管理员账户信息'''
 ADMIN_USERID = 'rikka'

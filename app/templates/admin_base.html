@@ -10,20 +10,15 @@
             <h1 class="center red"> Admin </h1>
         </div>
         <div id="profile">
-            {% if g.user.is_authenticated() %}
-                <a href={{ g.url }}> {{ g.user.userid }} </a>
-                <a href="/logout/"> Logout </a>
-                <a href='/' id="admin"> Home </a>
-            {% else %}
-                <a href="/login/"> Login </a>
-                <a href="/register/"> Register </a>
-            {% endif %}
+            <a href={{ g.url }}> {{ g.user.userid }} </a>
+            <a href="/logout"> Logout </a>
+            <a href='/' id="admin"> Home </a>
         </div>
         <div>
             <table id="navBar"><tr>
-                <td><a href="/admin/"> Admin Page</a></td>
-                <td><a href="/admin/notification/"> Notification </a></td>
-                <td><a href="/admin/problemset/"> Problemset </a></td>
+                <td><a href="/admin"> Admin Page</a></td>
+                <td><a href="/admin/notification"> Notification </a></td>
+                <td><a href="/admin/problemset"> Problemset </a></td>
             </table></tr>
         </div>
         <div id="wrapper2">

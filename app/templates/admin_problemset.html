@@ -6,14 +6,14 @@
         <h3 class="center red"> {{ message[0] }} </h3>
     {% endif %}
 {% endwith %}
-<a href="/admin/addproblem/"> Add Problem </a>
+<a href="/admin/addproblem"> Add Problem </a>
 <hr />
 <div class="center">
-{% for i in range(1, problem_count // 100 + 2) %}
+{% for i in problem_list.iter_pages() %}
     {% if pn == i %}
-        {{ i }}
+        <span class="red"> {{ i }} </span>
     {% else %}
-        <a href="/problemset/pn={{ i }}"> {{ i }} </a>
+        <a href={{ url_for('problemset', pn = i) }}> {{ i }} </a>
     {% endif %}
 {% endfor %}
 <div>
@@ -24,15 +24,15 @@
         <th id="ps_ac"> Edit </th>
         <th id="ps_submit"> Hide </th>
     </tr>
-    {% for problem in problem_list %}
+    {% for problem in problem_list.items %}
         <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
             <td> {{ problem.pid }} </td>
             <td class="left"><a href={{ url_for('show_problem', pid = problem.pid) }}> {{ problem.title }} </a></td>
-            <td><a href="{{ url_for('admin_edit_problem', pid = problem.pid) }}"> Edit </a></td>
+            <td><a href={{ url_for('admin_edit_problem', pid = problem.pid) }}> Edit </a></td>
             {% if problem.visable %}
-                <td><a href="/admin/hideproblem/{{ problem.pid }}/"> Hide </a></td>
+                <td><a href={{ url_for('admin_hide_problem', pid = problem.pid) }}> Hide </a></td>
             {% else %}
-                <td><a href="/admin/displayproblem/{{ problem.pid }}/"> Display </a></td>
+                <td><a href={{ url_for('admin_display_problem', pid = problem.pid) }}> Display </a></td>
             {% endif %}
         </tr>
     {% endfor %}

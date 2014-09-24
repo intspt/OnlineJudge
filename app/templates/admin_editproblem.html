@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 {% block content %}
 <h3 class="center blue"> Problem Information </h3>
-<form action="/admin/editproblem/{{ pid }}/" method="POST" enctype="multipart/form-data">
+<form action="/admin/editproblem" method="POST" enctype="multipart/form-data">
     {{ form.csrf_token }}
     <table id="addproblem">
         <tr><td id="left"> Title </td><td> {{ form.title(id="ptitle") }}</td></tr>

@@ -6,17 +6,24 @@
         <th id="ps_is_ac"> No. </th>
         <th id="ps_pid"> User ID </th>
         <th id="ps_title" style="text-align:center"> NickName </th>
-        <th id="ps_ac"> AC </th>
-        <th id="ps_submit"> Submit </th>
+        <th style="width:130px"> Problems Solved </th>
+        <th style="width:115px"> Submissions </th>
     </tr>
-    {% for i in range(start, end) %}
+    {% for user in user_list.items %}
         <tr style="{{ loop.cycle('', 'background-color:#D7EBFF') }}">
-            <td> {{ i }} </td>
-            <td><a href={{ url_for('userinfo', userid = user_list[i - 1].userid) }}> {{ user_list[i - 1].userid }} </a></td>
-            <td> {{ user_list[i - 1].nickname }} </td>
-            <td> {{ user_list[i - 1].ac_count }} </td>
-            <td> {{ user_list[i - 1].submit_count }} </td>
+            <td> {{ MAX_USER_NUM_ONE_PAGE * (pn - 1) + user_list.items.index(user) + 1 }} </td>
+            <td><a href={{ url_for('userinfo', userid = user.userid) }}> {{ user.userid }} </a></td>
+            <td> {{ user.nickname }} </td>
+            <td> {{ user.ac_count }} </td>
+            <td> {{ user.submit_count }} </td>
         </tr>
     {% endfor %}
 </table>
+<div class="center">
+    {% for i in user_list.iter_pages() %}
+        <a href={{ url_for('ranklist', pn = i) }}>
+            {{ (i - 1) * MAX_USER_NUM_ONE_PAGE + 1 }}-{{ i * MAX_USER_NUM_ONE_PAGE }}
+        </a>
+    {% endfor %}
+</div>
 {% endblock %}
