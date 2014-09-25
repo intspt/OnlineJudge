@@ -4,7 +4,7 @@
 <form method="POST" action="/submit">
     <div class="center">
         <h3 class="blue"> Submit Your Solution </h3>
-        Problem ID: {{ form.pid.data }} <br />
+        Problem ID: {{ form.pid(size=4, readonly="true") }} <br />
         Language: {{ form.language }}<br />
         Source Code<br />
         {{ form.src(rows = 30, cols = 79)}}<br />

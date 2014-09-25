@@ -6,10 +6,10 @@
     <form action="/status" method="GET">
         <table>
             <tr>
-                <td> Problem: {{ form.pid(size=8) }} </td>
-                <td> User ID: {{ form.userid(size=15) }} </td>
-                <td> Result: {{ form.result }} </td>
-                <td> Language: {{ form.language }} </td>
+                <td> Problem: {{ form.pid(id="", size=8) }} </td>
+                <td> User ID: {{ form.userid(id="", size=15) }} </td>
+                <td> Result: {{ form.result(id="") }} </td>
+                <td> Language: {{ form.language(id="") }} </td>
                 <td><button type="submit"> Go </button></td>
             </tr>
         </table>

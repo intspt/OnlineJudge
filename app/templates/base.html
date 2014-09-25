@@ -6,44 +6,46 @@
         <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='CSS/style.css')}}>
     </head>
     <body>
-    <div id="wrapper">
-        <div id="head">
-            <h1 id="title"> Welcome to Online Judge </h1>
-        </div>
-        <div id="profile">
-            {% if g.user.is_authenticated() %}
-                <a href={{ url_for('userinfo', userid = g.user.userid) }}> {{ g.user.userid }} </a>
-                <a href="/logout"> Logout </a>
-                {% if g.user.is_admin %}
-                    <a href='/admin' id="admin"> Admin </a>
+        <div id="wrapper">
+            <div id="head">
+                <h1 id="title"> Welcome to Online Judge </h1>
+            </div>
+            <div id="profile">
+                {% if g.user.is_authenticated() %}
+                    <a href={{ url_for('userinfo', userid = g.user.userid) }}> {{ g.user.userid }} </a>
+                    <a href="/logout"> Logout </a>
+                    {% if g.user.is_admin %}
+                        <a href='/admin' id="admin"> Admin </a>
+                    {% endif %}
+                {% else %}
+                    <a href="/login"> Login </a>
+                    <a href="/register"> Register </a>
                 {% endif %}
-            {% else %}
-                <a href="/login"> Login </a>
-                <a href="/register"> Register </a>
-            {% endif %}
+            </div>
+            <div>
+                <table id="navBar"><tr>
+                    <td><a href="/"> Home </a></td>
+                    <td><a href="/discuss"> Web Board </a></td>
+                    <td><a href="/problemset"> Problemset </a></td>
+                    <td><a href="/status"> Status </a></td>
+                    <td><a href="/ranklist"> Ranklist </a></td>
+                    <td><a href="/faqs"> F.A.Qs </a></td>
+                </table></tr>
+            </div>
+            <div id="notification">
+                {% if g.notification %}
+                    {{ g.notification }}
+                {% endif %}
+            </div>
+            <div id="wrapper2">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div id="hello">
+                <hr />
+                OnlineJudge From Spt<br \>
+                Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com"> Spt </a>
+            </div>
         </div>
-        <div>
-            <table id="navBar"><tr>
-                <td><a href="/"> Home </a></td>
-                <td><a href="/discuss"> Web Board </a></td>
-                <td><a href="/problemset"> Problemset </a></td>
-                <td><a href="/status"> Status </a></td>
-                <td><a href="/ranklist"> Ranklist </a></td>
-                <td><a href="/faqs"> F.A.Qs </a></td>
-            </table></tr>
-        </div>
-        <div id="notification">
-            {% if g.notification %}
-                {{ g.notification }}
-            {% endif %}
-        </div>
-        {% block content %}
-        {% endblock %}
-        <div id="hello">
-            <hr />
-            OnlineJudge From Spt<br \>
-            Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com"> Spt </a>
-        </div>
-    </div>
-  </body>
+    </body>
 </html>

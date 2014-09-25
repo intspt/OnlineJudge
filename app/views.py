@@ -10,12 +10,15 @@ from flask import render_template, request, g, redirect, url_for, flash, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, db, lm
-from models import User, Problem, Notification, Submit
-from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm, SubmitForm, SearchProblemForm, SearchSubmitForm
+from models import User, Problem, Notification, Submit, Comment, Reply
+from forms import RegisterForm, LoginForm, ProblemForm, NotificationForm, SubmitForm, \
+                    SearchProblemForm, SearchSubmitForm, PostForm, ReplyForm
+
 from config import USERID_ERROR, NICKNAME_ERROR, PASSWORD_ERROR, EQUAL_ERROR, EXIST_ERROR, \
                     CHECK_USERID_ERROR, CHECK_PASSWORD_ERROR, PERMISSION_ERROR, INPUT_ERROR, \
                     UPLOAD_SUCCESS, PAGENUMBER_ERROR, ADD_NOTIFICATION_SUCCESS, \
-                    MAX_PROBLEM_NUM_ONE_PAGE, MAX_SUBMIT_NUM_ONE_PAGE, DATA_FOLDER, MAX_USER_NUM_ONE_PAGE
+                    MAX_PROBLEM_NUM_ONE_PAGE, MAX_SUBMIT_NUM_ONE_PAGE, DATA_FOLDER, \
+                    MAX_USER_NUM_ONE_PAGE, MAX_REPLY_NUM_ONE_PAGE
 
 def admin_required(func):
     '''检查是否以管理员身份登陆'''
@@ -154,8 +157,9 @@ def show_problem():
 def submit_problem():
     '''提交页面'''
     pid = request.args.get('pid')
-    form = SubmitForm(pid = pid)
+    form = SubmitForm()
     if request.method == 'GET':
+        form.pid.data = pid
         return render_template('submit.html', form = form)
     else:
         submit = Submit(runid = Submit.query.count() + 1, userid = current_user.userid, \
@@ -207,7 +211,10 @@ def status():
     if language and language != 'All':
         subq = subq.filter_by(language = language)
 
-    submit_list = subq.all()
+    if subq.all():
+        submit_list = subq.slice(0, MAX_SUBMIT_NUM_ONE_PAGE)
+    else:
+        submit_list = subq.all()
     return render_template('status.html', form = form, submit_list = submit_list, pid = pid, \
                 userid = userid, result = result, language = language)
 
@@ -341,4 +348,69 @@ def admin_notification():
 
 @app.route('/discuss')
 def discuss():
-    return render_template('discuss.html')
+    pid = request.args.get('pid')
+    if pid:
+        comment_list = Comment.query.filter_by(pid = pid).order_by('comment.last_reply DESC').all()
+    else:
+        comment_list = Comment.query.order_by('comment.last_reply DESC').all()
+    return render_template('discuss.html', comment_list = comment_list, pid = pid)
+
+@app.route('/discuss/newpost', methods = ['GET', 'POST'])
+@login_required
+def newpost():
+    pid = request.args.get('pid')
+    form = PostForm(pid = pid)
+    if request.method == 'GET':
+        return render_template('newpost.html', form = form)
+    else:
+        if not Problem.query.filter_by(pid = form.pid.data).all() or not form.validate_title():
+            return 'error'
+
+        comment = Comment(pid = form.pid.data, userid = current_user.userid, \
+                            nickname = current_user.nickname, title = form.title.data, \
+                            content = form.content.data, post_time = get_now_time())
+
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('discuss', pid = pid))
+
+@app.route('/comment', methods = ['GET', 'POST'])
+def comment():
+    tid = request.args.get('tid')
+    form = ReplyForm()
+    if request.method == 'GET':
+        pn = request.args.get('pn')
+        if not pn:
+            pn = 1
+        else:
+            pn = int(pn)
+        if pn == 1:
+            comment = Comment.query.filter_by(tid = tid).first()
+        else:
+            comment = None
+
+        title = Comment.query.filter_by(tid = tid).first().title
+        reply_list = Reply.query.filter_by(tid = tid).order_by('reply.rid').paginate(pn, MAX_REPLY_NUM_ONE_PAGE)
+        return render_template('comment.html', tid = tid, title = title, comment = comment, pn = pn, \
+                                                reply_list = reply_list, form = form)
+    else:
+        reply = Reply(tid = tid, userid = current_user.userid, nickname = current_user.nickname, \
+                        content = form.content.data, post_time = get_now_time())
+
+        comment = Comment.query.filter_by(tid = tid).first()
+        comment.re += 1
+        db.session.add(reply)
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/deletepost')
+@login_required
+def deletepost():
+    if request.args.get('tid'):
+        Comment.query.filter_by(tid = request.args.get('tid')).delete()
+        db.session.commit()
+    elif request.args.get('rid'):
+        Reply.query.filter_by(rid = request.args.get('rid')).delete()
+        db.session.commit()
+
+    return redirect(request.referrer) or redirect('/discuss')

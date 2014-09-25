@@ -5,8 +5,9 @@ from app import db
 
 class User(db.Model):
     '''用户'''
+    __tablename__ = 'user'
     userid = db.Column(db.String(22), primary_key = True)
-    nickname = db.Column(db.Text)
+    nickname = db.Column(db.String(22))
     password = db.Column(db.Text)
     is_admin = db.Column(db.Boolean)
     ac_count = db.Column(db.Integer, default = 0)
@@ -32,7 +33,8 @@ class User(db.Model):
 
 class Problem(db.Model):
     '''题目'''
-    pid = db.Column(db.Integer, primary_key = True, default = None)
+    __tablename__ = 'problem'
+    pid = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.Text)
     desc = db.Column(db.Text)
     pinput = db.Column(db.Text)
@@ -59,6 +61,7 @@ class Problem(db.Model):
 
 class Submit(db.Model):
     '''提交信息'''
+    __tablename__ = 'submit'
     runid = db.Column(db.Integer, primary_key = True)
     userid = db.Column(db.String(22))
     pid = db.Column(db.Integer)
@@ -82,11 +85,52 @@ class Submit(db.Model):
 
 class Notification(db.Model):
     '''通知信息'''
-    mid = db.Column(db.Integer, primary_key = True, default = None)
+    __tablename__ = 'notification'
+    mid = db.Column(db.Integer, primary_key = True)
     content = db.Column(db.Text)
     visable = db.Column(db.Boolean, default = True)
-    add_time = db.Column(db.String(22))
+    add_time = db.Column(db.String(19))
 
     def __init__(self, content, add_time):
         self.content = content
         self.add_time = add_time
+
+class Comment(db.Model):
+    '''讨论主题'''
+    __tablename__ = 'comment'
+    tid = db.Column(db.Integer, primary_key = True)
+    pid = db.Column(db.Integer)
+    userid = db.Column(db.String(22))
+    nickname = db.Column(db.String(22))
+    title = db.Column(db.String(32))
+    content = db.Column(db.Text)
+    post_time = db.Column(db.String(19))
+    last_reply = db.Column(db.String(19))
+    re = db.Column(db.Integer, default = 0)
+    replys = db.relationship('Reply', backref = db.backref('comment',  passive_deletes = True))
+
+    def __init__(self, pid, userid, nickname, title, content, post_time):
+        self.pid = pid
+        self.userid = userid
+        self.nickname = nickname
+        self.title = title
+        self.content = content
+        self.post_time = post_time
+        self.last_reply = post_time
+
+class Reply(db.Model):
+    '''回复'''
+    __tablename__ = 'reply'
+    rid = db.Column(db.Integer, primary_key = True)
+    tid = db.Column(db.Integer, db.ForeignKey('comment.tid', ondelete = 'CASCADE'))
+    userid = db.Column(db.String(22))
+    nickname = db.Column(db.String(22))
+    content = db.Column(db.Text)
+    post_time = db.Column(db.String(19))
+
+    def __init__(self, tid, userid, nickname, content, post_time):
+        self.tid = tid
+        self.userid = userid
+        self.nickname = nickname
+        self.content = content
+        self.post_time = post_time

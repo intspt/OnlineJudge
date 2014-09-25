@@ -16,7 +16,7 @@ WAIT_TIME = 0.5
 SECRET_KEY = 'dark flame master'
 
 USERID_ERROR = 'User ID can only contain NUMBERs & LETTERs and length must be 3 to 22!'
-NICKNAME_ERROR = 'Nick Name must be 6 to 22 characters!'
+NICKNAME_ERROR = 'Nick Name must be 1 to 22 characters!'
 PASSWORD_ERROR = 'Password can only contain NUMBERs & LETTERs and length must be 6 to 22!'
 EQUAL_ERROR = 'Repeat PassWord must be equal to PassWord!'
 EXIST_ERROR = 'User ID has been registered!'
@@ -34,6 +34,8 @@ MAX_PROBLEM_NUM_ONE_PAGE = 100
 MAX_SUBMIT_NUM_ONE_PAGE = 20
 '''每页展示用户的最大数量'''
 MAX_USER_NUM_ONE_PAGE = 50
+'''每页显示的最大回复数量'''
+MAX_REPLY_NUM_ONE_PAGE = 10
 
 '''管理员账户信息'''
 ADMIN_USERID = 'rikka'

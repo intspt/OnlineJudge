@@ -5,30 +5,32 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='CSS/style.css')}}>
     </head>
-    <div id="wrapper">
-        <div id="head">
-            <h1 class="center red"> Admin </h1>
+    <body>
+        <div id="wrapper">
+            <div id="head">
+                <h1 id="title"> Admin </h1>
+            </div>
+            <div id="profile">
+                <a href={{ g.url }}> {{ g.user.userid }} </a>
+                <a href="/logout"> Logout </a>
+                <a href='/' id="admin"> Home </a>
+            </div>
+            <div>
+                <table id="navBar"><tr>
+                    <td><a href="/admin"> Admin Page</a></td>
+                    <td><a href="/admin/notification"> Notification </a></td>
+                    <td><a href="/admin/problemset"> Problemset </a></td>
+                </table></tr>
+            </div>
+            <div id="wrapper2">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div id="hello">
+                <hr />
+                OnlineJudge From Spt<br \>
+                Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com"> Spt </a>
+            </div>
         </div>
-        <div id="profile">
-            <a href={{ g.url }}> {{ g.user.userid }} </a>
-            <a href="/logout"> Logout </a>
-            <a href='/' id="admin"> Home </a>
-        </div>
-        <div>
-            <table id="navBar"><tr>
-                <td><a href="/admin"> Admin Page</a></td>
-                <td><a href="/admin/notification"> Notification </a></td>
-                <td><a href="/admin/problemset"> Problemset </a></td>
-            </table></tr>
-        </div>
-        <div id="wrapper2">
-            {% block content %}
-            {% endblock %}
-        </div>
-        <div id="hello">
-            <hr />
-            OnlineJudge From Spt<br \>
-            Anything about the Problems, Please Contact <a href="mailto:intspt@qq.com"> Spt </a>
-        </div>
-    </div>
+    </body>
 </html>

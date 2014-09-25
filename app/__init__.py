@@ -13,4 +13,4 @@ app = Flask(__name__)
 app.config.from_pyfile(FLASKS_ETTINGS, silent = False)
 db = SQLAlchemy(app)
 lm = LoginManager(app)
-lm.login_view = '/login/'
+lm.login_view = '/login'

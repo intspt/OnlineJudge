@@ -1,26 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
-    <h2 class="center"> Login Information </h2>
-    {% with message = get_flashed_messages() %}
-        {% if message %}
-            <h3 class="red"> {{ message[0] }} </h3>
-        {% endif %}
-    {% endwith %}
-    <form action="/login" method="POST">
-        {{ form.csrf_token }}
-        {{ form.next_url }}
-        <table id="login">
-            <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
-            <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Submit" >
-                    <input type="reset" value="Reset">
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
+<h2 class="center"> Login Information </h2>
+{% with message = get_flashed_messages() %}
+    {% if message %}
+        <h3 class="center red"> {{ message[0] }} </h3>
+    {% endif %}
+{% endwith %}
+<form action="/login" method="POST">
+    {{ form.csrf_token }}
+    {{ form.next_url }}
+    <table id="login">
+        <tr><td> User ID: </td><td> {{ form.userid(id="") }} * </td></tr>
+        <tr><td> PassWord: </td><td> {{ form.password(id="") }} * </td></tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Submit" >
+                <input type="reset" value="Reset">
+            </td>
+        </tr>
+    </table>
+</form>
 {% endblock %}

@@ -89,3 +89,16 @@ class SearchSubmitForm(Form):
                                     ('Output Limit Exceeded', 'Output Limit Exceeded'), \
                                     ('Compile Error', 'Compile Error')], \
                                     default = 'All')
+
+class PostForm(Form):
+    '''讨论主题表单'''
+    pid = TextField()
+    title = TextField()
+    content = TextAreaField()
+
+    def validate_title(self):
+        return 0 < len(self.title.data) < 33
+
+class ReplyForm(Form):
+    '''回复表单'''
+    content = TextAreaField()
