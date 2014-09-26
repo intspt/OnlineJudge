@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <title> Comment </title>
-<h3 class="center">{{ title }}</h3>
 <table class="reply">
+    <tr><td colspan="2"><h2><a href={{ url_for('show_problem', pid = pid) }}> Problem {{ pid }} </a>-- {{ title }} </h2></td></tr>
     {% if pn == 1 %}
         <tr>
             <td class="userinfo">
@@ -30,13 +30,30 @@
                 {{ reply.content }}
                 <div class="tip">
                     {% if g.user.is_authenticated() and g.user.userid == comment.userid %}
-                        [<a href={{ url_for('deletepost', tid = comment.tid) }}> Delete </a>]
+                        [<a href={{ url_for('deletepost', rid = reply.rid) }}> Delete </a>]
                     {% endif %}
                     {{ reply.post_time }}
                 </div>
             </td>
         </tr>
     {% endfor %}
+    <tr>
+        <td colspan="2">
+            <div class="center">
+                {% for i in reply_list.iter_pages() %}
+                    {% if pn == i %}
+                        <span class="red"> {{ i }} </span>
+                    {% else %}
+                        <a href={{ url_for('comment', pid = pid, tid = tid, pn = i) }}> {{ i }} </a>
+                    {% endif %}
+                {% endfor %}    
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td class="bold"> Content </td>
+    </tr>
     <tr>
         <td></td>
         <td>
@@ -49,13 +66,4 @@
         </td>
     </tr>
 </table>
-<div class="center">
-    {% for i in reply_list.iter_pages() %}
-        {% if pn == i %}
-            <span class="red"> {{ i }} </span>
-        {% else %}
-            <a href={{ url_for('comment', tid = tid, pn = i) }}> {{ i }} </a>
-        {% endif %}
-    {% endfor %}    
-</div>
 {% endblock %}

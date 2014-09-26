@@ -107,7 +107,7 @@ class Comment(db.Model):
     post_time = db.Column(db.String(19))
     last_reply = db.Column(db.String(19))
     re = db.Column(db.Integer, default = 0)
-    replys = db.relationship('Reply', backref = db.backref('comment',  passive_deletes = True))
+    replys = db.relationship('Reply')
 
     def __init__(self, pid, userid, nickname, title, content, post_time):
         self.pid = pid

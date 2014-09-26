@@ -53,6 +53,7 @@ def load_user(userid):
 @app.route('/')
 def home():
     '''主页'''
+    # print help(db.relationship)
     return render_template('index.html')
 
 @app.route('/faqs')
@@ -327,7 +328,7 @@ def admin_display_problem():
     db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/admin/notification/', methods = ['GET', 'POST'])
+@app.route('/admin/notification', methods = ['GET', 'POST'])
 @admin_required
 def admin_notification():
     '''后台通知页面(添加通知及展示历史通知)'''
@@ -379,6 +380,7 @@ def comment():
     tid = request.args.get('tid')
     form = ReplyForm()
     if request.method == 'GET':
+        pid = request.args.get('pid')
         pn = request.args.get('pn')
         if not pn:
             pn = 1
@@ -391,7 +393,7 @@ def comment():
 
         title = Comment.query.filter_by(tid = tid).first().title
         reply_list = Reply.query.filter_by(tid = tid).order_by('reply.rid').paginate(pn, MAX_REPLY_NUM_ONE_PAGE)
-        return render_template('comment.html', tid = tid, title = title, comment = comment, pn = pn, \
+        return render_template('comment.html', pid = pid, tid = tid, title = title, comment = comment, pn = pn, \
                                                 reply_list = reply_list, form = form)
     else:
         reply = Reply(tid = tid, userid = current_user.userid, nickname = current_user.nickname, \
@@ -409,8 +411,10 @@ def deletepost():
     if request.args.get('tid'):
         Comment.query.filter_by(tid = request.args.get('tid')).delete()
         db.session.commit()
+        return redirect('/discuss')
     elif request.args.get('rid'):
         Reply.query.filter_by(rid = request.args.get('rid')).delete()
         db.session.commit()
+        return redirect(request.referrer)
 
-    return redirect(request.referrer) or redirect('/discuss')
+    
