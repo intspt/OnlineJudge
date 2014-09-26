@@ -190,6 +190,13 @@
     text-align: center;
     margin: 0 auto;
 }
+.head {
+    color: white;
+    width: 1111px;
+    background-color: #1A5CC8;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
 .reply {
     width: 80%;
     margin: 0 auto;

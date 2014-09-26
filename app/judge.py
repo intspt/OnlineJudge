@@ -32,6 +32,7 @@ def work(que):
         pid = task['pid']
         userid = task['userid']
         language = task['language']
+        Submit.query.filter_by(runid = runid).update({'result': 'Runing'})
         result, rst = judge(runid, pid, language)
         problem = Problem.query.filter_by(pid = pid).first()
         user = User.query.filter_by(userid = userid).first()

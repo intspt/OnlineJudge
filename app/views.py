@@ -53,7 +53,6 @@ def load_user(userid):
 @app.route('/')
 def home():
     '''主页'''
-    # print help(db.relationship)
     return render_template('index.html')
 
 @app.route('/faqs')
@@ -207,7 +206,6 @@ def status():
     if userid:
         subq = subq.filter_by(userid = userid)
     if result and result != 'All':
-        print result
         subq = subq.filter_by(result = result)
     if language and language != 'All':
         subq = subq.filter_by(language = language)
@@ -373,7 +371,7 @@ def newpost():
 
         db.session.add(comment)
         db.session.commit()
-        return redirect(url_for('discuss', pid = pid))
+        return redirect(url_for('discuss', pid = form.pid.data))
 
 @app.route('/comment', methods = ['GET', 'POST'])
 def comment():
@@ -409,12 +407,16 @@ def comment():
 @login_required
 def deletepost():
     if request.args.get('tid'):
-        Comment.query.filter_by(tid = request.args.get('tid')).delete()
-        db.session.commit()
+        comment = Comment.query.filter_by(tid = request.args.get('tid')).first()
+        if current_user.is_admin or comment.userid == current_user.userid: 
+            Comment.query.filter_by(tid = request.args.get('tid')).delete()
+            db.session.commit()
         return redirect('/discuss')
     elif request.args.get('rid'):
-        Reply.query.filter_by(rid = request.args.get('rid')).delete()
-        db.session.commit()
+        reply = Reply.query.filter_by(rid = request.args.get('rid')).first()
+        if current_user.is_admin or reply.userid == current_user.userid:
+            Reply.query.filter_by(rid = request.args.get('rid')).delete()
+            db.session.commit()
         return redirect(request.referrer)
 
     
