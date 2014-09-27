@@ -143,7 +143,18 @@ def problemset():
         problem_list = Problem.query.filter_by(pid = pid).filter_by(visable = True).paginate(pn, MAX_PROBLEM_NUM_ONE_PAGE)
     else:
         problem_list = Problem.query.filter_by(visable = True).order_by('problem.pid').paginate(pn, MAX_PROBLEM_NUM_ONE_PAGE)
-    return render_template('problemset.html', pn = pn, problem_list = problem_list, form = form)
+    if current_user.is_authenticated():
+        ac_list = db.session.query(Submit.pid).distinct().filter_by(userid = current_user.userid).filter_by(result = 'Accepted').all()
+        submit_list = db.session.query(Submit.pid).distinct().filter_by(userid = current_user.userid).all()
+        if ac_list:
+            ac_list = zip(*ac_list)[0]
+        if submit_list:
+            submit_list = zip(*submit_list)[0]
+    else:
+        ac_list = []
+        submit_list = []
+    return render_template('problemset.html', pn = pn, problem_list = problem_list, form = form, \
+                                        ac_list = ac_list, submit_list = submit_list)
 
 @app.route('/showproblem')
 def show_problem():
